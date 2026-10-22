@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f32">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>في رحاب القرآن | إدارة الحفظ والمراجعة</title>
+<style>
+:root{--green:#173f32;--green2:#2e6847;--gold:#d9c58b;--paper:#f7f7f1;--ink:#1c2b23;--muted:#69766d;--line:#e0e6de;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:#f1f4ef;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.65}
+header{background:linear-gradient(135deg,#173f32,#255c41);color:#fff;padding:24px 16px 20px}
+.wrap{max-width:1050px;margin:auto}.brand{display:flex;align-items:center;gap:14px}.logo{width:54px;height:54px;border:1px solid #d9c58b;border-radius:16px;display:grid;place-items:center;color:#e8d6a1;font-size:28px}
+h1{font-size:clamp(24px,4vw,34px);margin:0;color:#f1e5bd}header p{margin:4px 0 0;color:#e0e8df}
+.notice{margin:16px auto 0;max-width:1050px;background:#fff8df;border:1px solid #eadba4;color:#594a1c;padding:12px 14px;border-radius:12px;font-size:13px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+button,.btn{border:0;border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer;background:var(--green2);color:#fff}
+button.secondary{background:#e8eee7;color:#254a34;border:1px solid #d8e2d7}button.danger{background:#fff0ef;color:#a32924;border:1px solid #f1cdca}
+button.active{background:var(--gold);color:#173f32}
+main{max-width:1050px;margin:auto;padding:0 16px 32px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 4px 14px #183b2b08}
+h2{font-size:21px;margin:0 0 12px}h3{font-size:16px;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{background:#f5f8f3;border-radius:13px;padding:14px}.stat strong{display:block;font-size:27px;color:var(--green)}
+label{display:block;font-size:13px;font-weight:bold;margin:8px 0 4px}
+input,select,textarea{width:100%;border:1px solid #ccd7cd;border-radius:9px;padding:11px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:82px;resize:vertical}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}
+.student{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}
+.student p{margin:2px 0;color:var(--muted);font-size:13px}.pill{font-size:12px;background:#e7f0e5;color:#2b613e;border-radius:20px;padding:4px 9px;display:inline-block}
+.muted{color:var(--muted);font-size:13px}.hidden{display:none!important}.empty{color:var(--muted);padding:16px;text-align:center;background:#f7f9f5;border-radius:12px}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28px}
+@media(max-width:640px){.grid,.stats{grid-template-columns:1fr}.student{align-items:flex-start}.student .row{flex:0 0 auto}.panel{padding:14px}}
+</style></head>
+<body>
+<header><div class="wrap brand"><div class="logo">۞</div><div><h1>في رحاب القرآن</h1><p>مسار فردي للحفظ والمراجعة والإتقان</p></div></div></header>
+<div class="notice"><strong>نسخة تجريبية:</strong> تُحفظ البيانات في هذا المتصفح على هذا الجهاز فقط. لا تستخدم أسماء أو بيانات حساسة حقيقية هنا. هذه النسخة لا تحتوي على حسابات دخول أو مزامنة آمنة بين الأجهزة.</div>
+<main>
+<nav>
+<button class="active" data-tab="home">الرئيسية</button><button class="secondary" data-tab="students">الطلبة</button><button class="secondary" data-tab="recite">تسجيل التسميع</button><button class="secondary" data-tab="tasks">الواجبات</button><button class="secondary" data-tab="backup">النسخ الاحتياطي</button>
+</nav>
+<section id="home" class="tab">
+<div class="panel"><h2>لوحة المحفّظ</h2><p class="muted">أدر مسارات طلبتك وسجّل التسميع والواجبات الفردية من مكان واحد.</p><div class="stats"><div class="stat"><span>الطلبة</span><strong id="countStudents">0</strong></div><div class="stat"><span>سجلات التسميع</span><strong id="countRecitations">0</strong></div><div class="stat"><span>الواجبات المفتوحة</span><strong id="countTasks">0</strong></div></div></div>
+<div class="panel"><h2>آخر سجلات التسميع</h2><div id="recent"></div></div>
+<div class="panel"><h2>تنبيه مهم</h2><p>سجّل لكل طالب مقدار الحفظ، ثم نتيجة التسميع والأخطاء، وبعدها عيّن واجبًا يناسب مستواه. الإتقان والمراجعة أهم من زيادة المقدار دون تثبيت.</p></div>
+</section>
+<section id="students" class="tab hidden">
+<div class="panel"><h2>إضافة طالب</h2><form id="studentForm"><div class="grid"><div><label for="studentName">اسم الطالب أو رمز تعريفي</label><input id="studentName" required maxlength="80" placeholder="مثال: طالب 01"></div><div><label for="startSurah">سورة البداية / موضع الحفظ</label><input id="startSurah" maxlength="120" placeholder="مثال: سورة النبأ، الآية 1"></div><div><label for="level">المستوى الحالي</label><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select></div><div><label for="dailyGoal">المقدار المستهدف</label><select id="dailyGoal"><option>آيات قليلة</option><option selected>نصف صفحة</option><option>صفحة</option><option>حسب التقييم</option></select></div></div><label for="studentNotes">ملاحظات تربوية أو تعليمية (اختياري)</label><textarea id="studentNotes" maxlength="1000" placeholder="ملاحظات تساعدك على تخصيص المسار"></textarea><p><button type="submit">إضافة الطالب</button></p></form></div>
+<div class="panel"><h2>قائمة الطلبة</h2><div id="studentList"></div></div>
+</section>
+<section id="recite" class="tab hidden">
+<div class="panel"><h2>تسجيل التسميع المباشر</h2><form id="reciteForm"><label for="reciteStudent">الطالب</label><select id="reciteStudent" required></select><div class="grid"><div><label for="recitePortion">السورة والآيات / المقدار</label><input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13"></div><div><label for="reciteDate">التاريخ</label><input id="reciteDate" type="date" required></div><div><label for="memorization">ضبط الحفظ</label><select id="memorization"><option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option></select></div><div><label for="tajweed">التلاوة والتجويد</label><select id="tajweed"><option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option></select></div></div><label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label><textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea><label for="teacherNote">ملاحظات المحفّظ</label><textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea><button type="submit">حفظ سجل التسميع</button></form></div>
+<div class="panel"><h2>سجل التسميع</h2><div id="recitationList"></div></div>
+</section>
+<section id="tasks" class="tab hidden">
+<div class="panel"><h2>تعيين واجب فردي</h2><form id="taskForm"><label for="taskStudent">الطالب</label><select id="taskStudent" required></select><div class="grid"><div><label for="taskType">نوع الواجب</label><select id="taskType"><option>حفظ جديد</option><option>مراجعة قريبة</option><option>مراجعة بعيدة</option><option>إعادة مواضع الأخطاء</option></select></div><div><label for="taskDue">موعد الإنجاز</label><input id="taskDue" type="date" required></div></div><label for="taskPortion">المقدار المحدد</label><input id="taskPortion" required maxlength="160" placeholder="السورة والآيات أو الصفحات"><label for="taskInstructions">تعليمات المحفّظ</label><textarea id="taskInstructions" maxlength="1000" placeholder="طريقة المراجعة أو عدد مرات التكرار"></textarea><button type="submit">إضافة الواجب</button></form></div>
+<div class="panel"><h2>الواجبات المسجّلة</h2><div id="taskList"></div></div>
+</section>
+<section id="backup" class="tab hidden">
+<div class="panel"><h2>النسخ الاحتياطي</h2><p>صدّر نسخة JSON للاحتفاظ بنسخة من بيانات النموذج على جهازك، أو استورد نسخة سابقة. احفظ الملف في مكان آمن.</p><div class="row"><button id="exportBtn">تصدير البيانات</button><label class="btn" style="text-align:center;display:block">استيراد نسخة JSON<input id="importFile" type="file" accept=".json,application/json" style="display:none"></label></div><p id="backupStatus" class="muted"></p></div>
+<div class="panel"><h2>مسح البيانات</h2><p class="muted">هذا الإجراء يمسح بيانات هذا النموذج من المتصفح الحالي.</p><button class="danger" id="clearBtn">مسح جميع بيانات هذا الجهاز</button></div>
+</section>
+</main><footer>في رحاب القرآن · نموذج أولي لإدارة الحفظ والمراجعة</footer>
+<script>
+const KEY='fi_rihab_alquran_v1';
+const blank=()=>({students:[],recitations:[],tasks:[]});
+let db=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||blank()}catch{return blank()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateNow(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+document.getElementById('reciteDate').value=dateNow();document.getElementById('taskDue').value=dateNow();
+function studentName(id){return db.students.find(s=>s.id===id)?.name||'طالب محذوف'}
+function renderSelects(){['reciteStudent','taskStudent'].forEach(id=>{let el=document.getElementById(id),old=el.value;el.innerHTML=db.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');if(old&&db.students.some(s=>s.id===old))el.value=old;if(!db.students.length)el.innerHTML='<option value="">أضف طالبًا أولًا</option>'})}
+function render(){
+ document.getElementById('countStudents').textContent=db.students.length;
+ document.getElementById('countRecitations').textContent=db.recitations.length;
+ document.getElementById('countTasks').textContent=db.tasks.filter(t=>!t.done).length;
+ document.getElementById('studentList').innerHTML=db.students.length?db.students.map(s=>`<div class="student"><div><strong>${esc(s.name)}</strong><p>البداية: ${esc(s.start||'لم تحدد')} · المستوى: ${esc(s.level)} · الهدف: ${esc(s.goal)}</p>${s.notes?`<p>${esc(s.notes)}</p>`:''}</div><button class="danger" data-delete-student="${s.id}">حذف</button></div>`).join(''):'<div class="empty">لم تتم إضافة طلبة بعد.</div>';
+ document.getElementById('recitationList').innerHTML=db.recitations.length?[...db.recitations].reverse().map(r=>`<div class="item"><strong>${esc(studentName(r.studentId))}</strong> <span class="pill">${esc(r.memorization)}</span><p>${esc(r.portion)} · ${esc(r.date)}</p><p>التجويد: ${esc(r.tajweed)}</p>${r.mistakes?`<p>الأخطاء: ${esc(r.mistakes)}</p>`:''}${r.note?`<p>ملاحظة: ${esc(r.note)}</p>`:''}<button class="danger" data-delete-recitation="${r.id}">حذف السجل</button></div>`).join(''):'<div class="empty">لا توجد سجلات تسميع بعد.</div>';
+ document.getElementById('taskList').innerHTML=db.tasks.length?[...db.tasks].reverse().map(t=>`<div class="item"><strong>${esc(studentName(t.studentId))}</strong> <span class="pill">${esc(t.type)}</span><p>${esc(t.portion)} · الموعد: ${esc(t.due)}</p>${t.instructions?`<p>${esc(t.instructions)}</p>`:''}<div class="row"><button data-toggle-task="${t.id}" class="secondary">${t.done?'إعادة فتح الواجب':'تحديد كمكتمل'}</button><button class="danger" data-delete-task="${t.id}">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد واجبات بعد.</div>';
+ let recent=[...db.recitations].reverse().slice(0,5);document.getElementById('recent').innerHTML=recent.length?recent.map(r=>`<div class="item"><strong>${esc(studentName(r.studentId))}</strong><p>${esc(r.portion)} · ${esc(r.date)} · ${esc(r.memorization)}</p></div>`).join(''):'<div class="empty">ستظهر هنا أحدث سجلات التسميع.</div>';
+ renderSelects();
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>{x.classList.remove('active');x.classList.add('secondary')});b.classList.add('active');b.classList.remove('secondary');document.querySelectorAll('.tab').forEach(s=>s.classList.add('hidden'));document.getElementById(b.dataset.tab).classList.remove('hidden')}));
+document.getElementById('studentForm').addEventListener('submit',e=>{e.preventDefault();db.students.push({id:crypto.randomUUID(),name:document.getElementById('studentName').value.trim(),start:document.getElementById('startSurah').value.trim(),level:document.getElementById('level').value,goal:document.getElementById('dailyGoal').value,notes:document.getElementById('studentNotes').value.trim()});e.target.reset();save();});
+document.getElementById('reciteForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.recitations.push({id:crypto.randomUUID(),studentId:document.getElementById('reciteStudent').value,portion:document.getElementById('recitePortion').value.trim(),date:document.getElementById('reciteDate').value,memorization:document.getElementById('memorization').value,tajweed:document.getElementById('tajweed').value,mistakes:document.getElementById('mistakes').value.trim(),note:document.getElementById('teacherNote').value.trim()});let d=document.getElementById('reciteDate').value;e.target.reset();document.getElementById('reciteDate').value=d||dateNow();save();});
+document.getElementById('taskForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.tasks.push({id:crypto.randomUUID(),studentId:document.getElementById('taskStudent').value,type:document.getElementById('taskType').value,due:document.getElementById('taskDue').value,portion:document.getElementById('taskPortion').value.trim(),instructions:document.getElementById('taskInstructions').value.trim(),done:false});e.target.reset();document.getElementById('taskDue').value=dateNow();save();});
+document.addEventListener('click',e=>{let t=e.target;if(t.dataset.deleteStudent){if(confirm('حذف الطالب وكل سجلاته وواجباته؟')){let id=t.dataset.deleteStudent;db.students=db.students.filter(s=>s.id!==id);db.recitations=db.recitations.filter(r=>r.studentId!==id);db.tasks=db.tasks.filter(x=>x.studentId!==id);save()}}if(t.dataset.deleteRecitation){db.recitations=db.recitations.filter(r=>r.id!==t.dataset.deleteRecitation);save()}if(t.dataset.deleteTask){db.tasks=db.tasks.filter(x=>x.id!==t.dataset.deleteTask);save()}if(t.dataset.toggleTask){db.tasks=db.tasks.map(x=>x.id===t.dataset.toggleTask?{...x,done:!x.done}:x);save()}});
+document.getElementById('exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fi-rihab-alquran-backup.json';a.click();URL.revokeObjectURL(a.href);document.getElementById('backupStatus').textContent='تم إنشاء ملف النسخة الاحتياطية على جهازك.'});
+document.getElementById('importFile').addEventListener('change',async e=>{try{let f=e.target.files[0];if(!f)return;let x=JSON.parse(await f.text());if(!Array.isArray(x.students)||!Array.isArray(x.recitations)||!Array.isArray(x.tasks))throw Error();if(confirm('استبدال بيانات النموذج الحالية بالنسخة المستوردة؟')){db=x;save();document.getElementById('backupStatus').textContent='تم استيراد البيانات.'}}catch{document.getElementById('backupStatus').textContent='تعذر استيراد الملف: تأكد أنه نسخة احتياطية صحيحة.'}e.target.value=''});
+document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('هل أنت متأكد؟ سيتم حذف جميع بيانات هذا الجهاز.')){db=blank();save();document.getElementById('backupStatus').textContent='تم مسح البيانات من هذا المتصفح.'}});
+render();
+</script><script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+}
+</script>
+</body></html>
