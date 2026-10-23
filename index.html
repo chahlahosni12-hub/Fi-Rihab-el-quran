@@ -96,4 +96,23 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
 }
 </script>
+ 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  const SUPABASE_URL = "https://yysruuckpfqzymvpioce.supabase.co";
+
+  const SUPABASE_KEY = "ضع_هنا_المفتاح_العام_فقط";
+
+  const supabaseClient = window.supabase.createClient(
+
+    SUPABASE_URL,
+
+    SUPABASE_KEY
+
+  );
+
+</script>
 </body></html>
