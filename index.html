@@ -104,7 +104,13 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 
   const SUPABASE_URL = "https://yysruuckpfqzymvpioce.supabase.co";
 
-  const SUPABASE_KEY = "ضع_هنا_المفتاح_العام_فقط";
+const SUPABASE_URL = "https://yysruuckpfqzymvpioce.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YxRCrAWRLzmn7DHD2nk1Ig_GniEdvxU";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
   const supabaseClient = window.supabase.createClient(
 
