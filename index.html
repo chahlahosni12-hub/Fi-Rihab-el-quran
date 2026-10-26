@@ -52,7 +52,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
 <div class="panel"><h2>تسجيل التسميع المباشر</h2><form id="reciteForm"><label for="reciteStudent">الطالب</label><select id="reciteStudent" required></select><div class="grid"><div><label for="recitePortion">السورة والآيات / المقدار</label><input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13"></div><div><label for="reciteDate">التاريخ</label><input id="reciteDate" type="date" required></div><div><label for="memorization">ضبط الحفظ</label><select id="memorization"><option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option></select></div><div><label for="tajweed">التلاوة والتجويد</label><select id="tajweed"><option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option></select></div></div><label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label><textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea><label for="teacherNote">ملاحظات المحفّظ</label><textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea><<label>تسجيل صوت الطالب</label>
   <button type="button" id="startRecording">🎙️ بدء التسجيل</button>
   <button type="button" id="stopRecording" disabled>⏹️ إيقاف التسجيل</button>
-  <audio id="audioPreview" controls hidden></audio>
+ <audio id="audioPreview" controls hidden></audio>
+<button type="button" id="deleteRecording">🗑️ مسح التسجيل</button>
   <p id="recordingStatus">لم يبدأ التسجيل بعد</p>
 </div>button type="submit">حفظ سجل التسميع</button></form></div>
 <div class="panel"><h2>سجل التسميع</h2><div id="recitationList"></div></div>
@@ -101,6 +102,26 @@ let audioChunks = [];
 const startBtn = document.getElementById('startRecording');
 const stopBtn = document.getElementById('stopRecording');
 const audioPreview = document.getElementById('audioPreview');
+  const deleteBtn = document.getElementById('deleteRecording');
+
+deleteBtn.addEventListener('click', () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+
+  audioPreview.pause();
+  audioPreview.removeAttribute('src');
+  audioPreview.load();
+  audioPreview.hidden = true;
+  audioPreview.style.display = 'none';
+  audioChunks = [];
+
+  recordingStatus.textContent = 'تم مسح التسجيل';
+});
+
+
+
+ 
 const recordingStatus = document.getElementById('recordingStatus');
 
 startBtn.addEventListener('click', async () => {
