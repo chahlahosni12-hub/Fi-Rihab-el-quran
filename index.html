@@ -49,7 +49,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
 <div class="panel"><h2>قائمة الطلبة</h2><div id="studentList"></div></div>
 </section>
 <section id="recite" class="tab hidden">
-<div class="panel"><h2>تسجيل التسميع المباشر</h2><form id="reciteForm"><label for="reciteStudent">الطالب</label><select id="reciteStudent" required></select><div class="grid"><div><label for="recitePortion">السورة والآيات / المقدار</label><input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13"></div><div><label for="reciteDate">التاريخ</label><input id="reciteDate" type="date" required></div><div><label for="memorization">ضبط الحفظ</label><select id="memorization"><option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option></select></div><div><label for="tajweed">التلاوة والتجويد</label><select id="tajweed"><option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option></select></div></div><label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label><textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea><label for="teacherNote">ملاحظات المحفّظ</label><textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea><button type="submit">حفظ سجل التسميع</button></form></div>
+<div class="panel"><h2>تسجيل التسميع المباشر</h2><form id="reciteForm"><label for="reciteStudent">الطالب</label><select id="reciteStudent" required></select><div class="grid"><div><label for="recitePortion">السورة والآيات / المقدار</label><input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13"></div><div><label for="reciteDate">التاريخ</label><input id="reciteDate" type="date" required></div><div><label for="memorization">ضبط الحفظ</label><select id="memorization"><option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option></select></div><div><label for="tajweed">التلاوة والتجويد</label><select id="tajweed"><option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option></select></div></div><label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label><textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea><label for="teacherNote">ملاحظات المحفّظ</label><textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea><<label>تسجيل صوت الطالب</label>
+  <button type="button" id="startRecording">🎙️ بدء التسجيل</button>
+  <button type="button" id="stopRecording" disabled>⏹️ إيقاف التسجيل</button>
+  <audio id="audioPreview" controls hidden></audio>
+  <p id="recordingStatus">لم يبدأ التسجيل بعد</p>
+</div>button type="submit">حفظ سجل التسميع</button></form></div>
 <div class="panel"><h2>سجل التسميع</h2><div id="recitationList"></div></div>
 </section>
 <section id="tasks" class="tab hidden">
@@ -90,7 +95,59 @@ document.addEventListener('click',e=>{let t=e.target;if(t.dataset.deleteStudent)
 document.getElementById('exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fi-rihab-alquran-backup.json';a.click();URL.revokeObjectURL(a.href);document.getElementById('backupStatus').textContent='تم إنشاء ملف النسخة الاحتياطية على جهازك.'});
 document.getElementById('importFile').addEventListener('change',async e=>{try{let f=e.target.files[0];if(!f)return;let x=JSON.parse(await f.text());if(!Array.isArray(x.students)||!Array.isArray(x.recitations)||!Array.isArray(x.tasks))throw Error();if(confirm('استبدال بيانات النموذج الحالية بالنسخة المستوردة؟')){db=x;save();document.getElementById('backupStatus').textContent='تم استيراد البيانات.'}}catch{document.getElementById('backupStatus').textContent='تعذر استيراد الملف: تأكد أنه نسخة احتياطية صحيحة.'}e.target.value=''});
 document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('هل أنت متأكد؟ سيتم حذف جميع بيانات هذا الجهاز.')){db=blank();save();document.getElementById('backupStatus').textContent='تم مسح البيانات من هذا المتصفح.'}});
-render();
+let mediaRecorder;
+let audioChunks = [];
+
+const startBtn = document.getElementById('startRecording');
+const stopBtn = document.getElementById('stopRecording');
+const audioPreview = document.getElementById('audioPreview');
+const recordingStatus = document.getElementById('recordingStatus');
+
+startBtn.addEventListener('click', async () => {
+  try {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      recordingStatus.textContent = 'المتصفح لا يدعم التسجيل';
+      return;
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true
+    });
+
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, {
+        type: mediaRecorder.mimeType || 'audio/webm'
+      });
+
+      audioPreview.src = URL.createObjectURL(audioBlob);
+      audioPreview.hidden = false;
+      recordingStatus.textContent = 'اكتمل التسجيل، استمع إليه للمراجعة';
+      stream.getTracks().forEach(track => track.stop());
+    };
+
+    mediaRecorder.start();
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    recordingStatus.textContent = '🔴 التسجيل جارٍ...';
+  } catch (error) {
+    recordingStatus.textContent = 'تعذّر تشغيل الميكروفون. تحقّق من الإذن.';
+  }
+});
+
+stopBtn.addEventListener('click', () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  }
+});render();
 </script><script>
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
