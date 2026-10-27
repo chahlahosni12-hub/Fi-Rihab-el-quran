@@ -119,7 +119,40 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
     <div id="recitationList"></div>
   </div>
 
-</section>
+</section> 
+ <section id="tasks" class="tab hidden">
+  <div class="panel">
+    <h2>إضافة واجب</h2>
+    <form id="taskForm">
+      <label for="taskStudent">الطالب</label>
+      <select id="taskStudent" required></select>
+
+      <label for="taskType">نوع الواجب</label>
+      <select id="taskType">
+        <option>حفظ جديد</option>
+        <option>مراجعة</option>
+        <option>تثبيت</option>
+      </select>
+
+      <label for="taskDue">موعد التسليم</label>
+      <input id="taskDue" type="date" required>
+
+      <label for="taskPortion">المقدار المطلوب</label>
+      <input id="taskPortion" required maxlength="160"
+             placeholder="مثال: حفظ سورة الملك من الآية 1 إلى 10">
+
+      <label for="taskInstructions">توجيهات المحفّظ</label>
+      <textarea id="taskInstructions" maxlength="1000"></textarea>
+
+      <button type="submit">حفظ الواجب</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>قائمة الواجبات</h2>
+    <div id="taskList"></div>
+  </div>
+</section> 
 <section id="backup" class="tab hidden">
 <div class="panel"><h2>النسخ الاحتياطي</h2><p>صدّر نسخة JSON للاحتفاظ بنسخة من بيانات النموذج على جهازك، أو استورد نسخة سابقة. احفظ الملف في مكان آمن.</p><div class="row"><button id="exportBtn">تصدير البيانات</button><label class="btn" style="text-align:center;display:block">استيراد نسخة JSON<input id="importFile" type="file" accept=".json,application/json" style="display:none"></label></div><p id="backupStatus" class="muted"></p></div>
 <div class="panel"><h2>مسح البيانات</h2><p class="muted">هذا الإجراء يمسح بيانات هذا النموذج من المتصفح الحالي.</p><button class="danger" id="clearBtn">مسح جميع بيانات هذا الجهاز</button></div>
