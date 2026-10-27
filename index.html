@@ -228,12 +228,6 @@ document.getElementById('studentForm').addEventListener('submit', async e => {
     alert('تعذّر حفظ الطالب: ' + error.message);
   }
 });
-    alert('تم حفظ الطالب في قاعدة البيانات بنجاح.');
-
-  } catch (error) {
-    alert('تعذّر حفظ الطالب: ' + error.message);
-  }
-});
  document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>{x.classList.remove('active');x.classList.add('secondary')});b.classList.add('active');b.classList.remove('secondary');document.querySelectorAll('.tab').forEach(s=>s.classList.add('hidden'));document.getElementById(b.dataset.tab).classList.remove('hidden')}));
 document.getElementById('reciteForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.recitations.push({id:crypto.randomUUID(),studentId:document.getElementById('reciteStudent').value,portion:document.getElementById('recitePortion').value.trim(),date:document.getElementById('reciteDate').value,memorization:document.getElementById('memorization').value,tajweed:document.getElementById('tajweed').value,mistakes:document.getElementById('mistakes').value.trim(),note:document.getElementById('teacherNote').value.trim()});let d=document.getElementById('reciteDate').value;e.target.reset();document.getElementById('reciteDate').value=d||dateNow();save();});
 document.getElementById('taskForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.tasks.push({id:crypto.randomUUID(),studentId:document.getElementById('taskStudent').value,type:document.getElementById('taskType').value,due:document.getElementById('taskDue').value,portion:document.getElementById('taskPortion').value.trim(),instructions:document.getElementById('taskInstructions').value.trim(),done:false});e.target.reset();document.getElementById('taskDue').value=dateNow();save();});
