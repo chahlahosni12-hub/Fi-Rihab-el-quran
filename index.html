@@ -48,7 +48,45 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
 <div class="panel"><h2>إضافة طالب</h2><form id="studentForm"><div class="grid"><div><label for="studentName">اسم الطالب أو رمز تعريفي</label><input id="studentName" required maxlength="80" placeholder="مثال: طالب 01"></div><div><label for="startSurah">سورة البداية / موضع الحفظ</label><input id="startSurah" maxlength="120" placeholder="مثال: سورة النبأ، الآية 1"></div><div><label for="level">المستوى الحالي</label><select id="level"><option>مبتدئ</option><option>متوسط</option><option>متقدم</option></select></div><div><label for="dailyGoal">المقدار المستهدف</label><select id="dailyGoal"><option>آيات قليلة</option><option selected>نصف صفحة</option><option>صفحة</option><option>حسب التقييم</option></select></div></div><label for="studentNotes">ملاحظات تربوية أو تعليمية (اختياري)</label><textarea id="studentNotes" maxlength="1000" placeholder="ملاحظات تساعدك على تخصيص المسار"></textarea><p><button type="submit">إضافة الطالب</button></p></form></div>
 <div class="panel"><h2>قائمة الطلبة</h2><div id="studentList"></div></div>
 </section>
-      <textarea id="teacherNote" maxlength="1500"></textarea>
+<section id="recite" class="tab hidden">
+  <div class="panel">
+    <h2>تسجيل التسميع المباشر</h2>
+    <form id="reciteForm">
+      <label for="reciteStudent">الطالب</label>
+      <select id="reciteStudent" required></select>
+
+      <div class="grid">
+        <div>
+          <label for="recitePortion">السورة والآيات / المقدار</label>
+          <input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13">
+        </div>
+        <div>
+          <label for="reciteDate">التاريخ</label>
+          <input id="reciteDate" type="date" required>
+        </div>
+        <div>
+          <label for="memorization">ضبط الحفظ</label>
+          <select id="memorization">
+            <option>متقن</option>
+            <option>جيد ويحتاج مراجعة</option>
+            <option>يحتاج إلى إعادة</option>
+          </select>
+        </div>
+        <div>
+          <label for="tajweed">التلاوة والتجويد</label>
+          <select id="tajweed">
+            <option>سليم</option>
+            <option>ملاحظات بسيطة</option>
+            <option>يحتاج إلى متابعة</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label>
+      <textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea>
+
+      <label for="teacherNote">ملاحظات المحفّظ</label>
+      <textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea>
 
       <label>تسجيل صوت الطالب</label>
       <div class="row">
@@ -59,7 +97,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
 
       <audio id="audioPreview" controls hidden></audio>
       <p id="recordingStatus">لم يبدأ التسجيل بعد</p>
-
       <button type="submit">حفظ سجل التسميع</button>
     </form>
   </div>
@@ -68,26 +105,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28p
     <h2>سجل التسميع</h2>
     <div id="recitationList"></div>
   </div>
-</section>
-<div class="panel"><h2>تسجيل التسميع المباشر</h2><form id="reciteForm"><label for="reciteStudent">الطالب</label><select id="reciteStudent" required></select><div class="grid"><div><label for="recitePortion">السورة والآيات / المقدار</label><input id="recitePortion" required maxlength="160" placeholder="مثال: المجادلة 10–13"></div><div><label for="reciteDate">التاريخ</label><input id="reciteDate" type="date" required></div><div><label for="memorization">ضبط الحفظ</label><select id="memorization"><option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option></select></div><div><label for="tajweed">التلاوة والتجويد</label><select id="tajweed"><option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option></select></div></div><label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label><textarea id="mistakes" maxlength="1500" placeholder="دوّن الأخطاء بدقة"></textarea><label for="teacherNote">ملاحظات المحفّظ</label><textarea id="teacherNote" maxlength="1500" placeholder="توجيه أو ملاحظة للقاء القادم"></textarea><<label>تسجيل صوت الطالب</label>
-<button type="button" id="startRecording">🎙️ بدء التسجيل</button>
-<button type="button" id="stopRecording" disabled>⏹️ إيقاف التسجيل</button>
-<audio id="audioPreview" controls hidden></audio>
-<button type="button" id="deleteRecording">🗑️ مسح التسجيل</button>
-<p id="recordingStatus">لم يبدأ التسجيل بعد</p>
-<button type="submit">حفظ سجل التسميع</button>
-</form></div>
-  <button type="button" id="startRecording">🎙️ بدء التسجيل</button>
-  <button type="button" id="stopRecording" disabled>⏹️ إيقاف التسجيل</button>
- <audio id="audioPreview" controls hidden></audio>
-<button type="button" id="deleteRecording">🗑️ مسح التسجيل</button>
-  <p id="recordingStatus">لم يبدأ التسجيل بعد</p>
-</div>button type="submit">حفظ سجل التسميع</button></form></div>
-<div class="panel"><h2>سجل التسميع</h2><div id="recitationList"></div></div>
-</section>
-<section id="tasks" class="tab hidden">
-<div class="panel"><h2>تعيين واجب فردي</h2><form id="taskForm"><label for="taskStudent">الطالب</label><select id="taskStudent" required></select><div class="grid"><div><label for="taskType">نوع الواجب</label><select id="taskType"><option>حفظ جديد</option><option>مراجعة قريبة</option><option>مراجعة بعيدة</option><option>إعادة مواضع الأخطاء</option></select></div><div><label for="taskDue">موعد الإنجاز</label><input id="taskDue" type="date" required></div></div><label for="taskPortion">المقدار المحدد</label><input id="taskPortion" required maxlength="160" placeholder="السورة والآيات أو الصفحات"><label for="taskInstructions">تعليمات المحفّظ</label><textarea id="taskInstructions" maxlength="1000" placeholder="طريقة المراجعة أو عدد مرات التكرار"></textarea><button type="submit">إضافة الواجب</button></form></div>
-<div class="panel"><h2>الواجبات المسجّلة</h2><div id="taskList"></div></div>
+
 </section>
 <section id="backup" class="tab hidden">
 <div class="panel"><h2>النسخ الاحتياطي</h2><p>صدّر نسخة JSON للاحتفاظ بنسخة من بيانات النموذج على جهازك، أو استورد نسخة سابقة. احفظ الملف في مكان آمن.</p><div class="row"><button id="exportBtn">تصدير البيانات</button><label class="btn" style="text-align:center;display:block">استيراد نسخة JSON<input id="importFile" type="file" accept=".json,application/json" style="display:none"></label></div><p id="backupStatus" class="muted"></p></div>
