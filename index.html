@@ -32,7 +32,20 @@ textarea{min-height:82px;resize:vertical}.row{display:flex;gap:8px;align-items:c
 footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 28px}
 @media(max-width:640px){.grid,.stats{grid-template-columns:1fr}.student{align-items:flex-start}.student .row{flex:0 0 auto}.panel{padding:14px}}
 </style></head>
-<body>
+<body> 
+  <div class="panel" id="authPanel">
+  <h2>دخول المحفّظ</h2>
+  <form id="authForm">
+    <label for="authEmail">البريد الإلكتروني</label>
+    <input id="authEmail" type="email" required>
+
+    <label for="authPassword">كلمة السر</label>
+    <input id="authPassword" type="password" required>
+
+    <button type="submit">دخول</button>
+    <p id="authStatus"></p>
+  </form>
+</div>
 <header><div class="wrap brand"><div class="logo">۞</div><div><h1>في رحاب القرآن</h1><p>مسار فردي للحفظ والمراجعة والإتقان</p></div></div></header>
 <div class="notice"><strong>نسخة تجريبية:</strong> تُحفظ البيانات في هذا المتصفح على هذا الجهاز فقط. لا تستخدم أسماء أو بيانات حساسة حقيقية هنا. هذه النسخة لا تحتوي على حسابات دخول أو مزامنة آمنة بين الأجهزة.</div>
 <main>
@@ -243,5 +256,32 @@ const supabaseClient = window.supabase.createClient(
   .then(({ data, error }) => {
     console.log("Database test:", error ? error.message : "success");
   });
+</script> 
+  <script>
+document.getElementById('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const status = document.getElementById('authStatus');
+  const button = e.target.querySelector('button[type="submit"]');
+
+  status.textContent = 'جارٍ التحقق من بيانات الدخول...';
+  button.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: document.getElementById('authEmail').value.trim(),
+      password: document.getElementById('authPassword').value
+    });
+
+    if (error) throw error;
+
+    document.getElementById('authPanel').hidden = true;
+    status.textContent = 'تم تسجيل الدخول بنجاح.';
+  } catch (error) {
+    status.textContent = 'تعذّر الدخول: تأكّد من البريد الإلكتروني وكلمة السر.';
+  } finally {
+    button.disabled = false;
+  }
+});
 </script>
 </body></html>
