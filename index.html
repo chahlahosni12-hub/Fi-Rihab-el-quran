@@ -195,24 +195,21 @@ function render(){
     const studentName = document.getElementById('studentName').value.trim();
     if (!studentName) return;
 
-    const { data, error } = await supabaseClient
-      .from('students')
-      .insert({ 
-               id: crypto.randomUUID(),
-  teacher_id: user.id,
-  teacher_user_id: user.id,
-        full_name: studentName,
-  full: studentName,
-        id: crypto.randomUUID(),
-        teacher_user_id: user.id,
-        full: studentName,
-        start_surah: document.getElementById('startSurah').value.trim(),
-        level: document.getElementById('level').value,
-        daily_goal: document.getElementById('dailyGoal').value,
-        notes: document.getElementById('studentNotes').value.trim()
-      })
-                    .select('id, full, start_surah, level, daily_goal, notes')
-      .single();
+const { data, error } = await supabaseClient
+  .from('students')
+  .insert({
+    id: crypto.randomUUID(),
+    teacher_id: user.id,
+    teacher_user_id: user.id,
+    full_name: studentName,
+    full: studentName,
+    start_surah: document.getElementById('startSurah').value.trim(),
+    level: document.getElementById('level').value,
+    daily_goal: document.getElementById('dailyGoal').value,
+    notes: document.getElementById('studentNotes').value.trim()
+  })
+  .select('id, full_name, full, start_surah, level, daily_goal, notes')
+    .single();
 
     if (error) throw error;
 
