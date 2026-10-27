@@ -198,8 +198,7 @@ function render(){
     const { data, error } = await supabaseClient
       .from('students')
       .insert({ 
-       .insert({
-  id: crypto.randomUUID(),
+               id: crypto.randomUUID(),
   teacher_id: user.id,
   teacher_user_id: user.id,
   full: studentName,
