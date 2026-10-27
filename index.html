@@ -204,9 +204,9 @@ document.getElementById('studentForm').addEventListener('submit', async e => {
         start_surah: document.getElementById('startSurah').value.trim(),
         level: document.getElementById('level').value,
         daily_goal: document.getElementById('dailyGoal').value,
-        note: document.getElementById('studentNotes').value.trim()
+notes: document.getElementById('studentNotes').value.trim()
       })
-      .select('id, full, start_surah, level, daily_goal, note')
+.select('id, full, start_surah, level, daily_goal, notes')
       .single();
 
     if (error) throw error;
@@ -217,7 +217,7 @@ document.getElementById('studentForm').addEventListener('submit', async e => {
       start: data.start_surah || '',
       level: data.level || '',
       goal: data.daily_goal || '',
-      notes: data.note || ''
+      notes: data.notes || ''
     });
 
     save();
