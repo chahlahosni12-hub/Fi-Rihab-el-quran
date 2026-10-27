@@ -147,8 +147,52 @@ function render(){
  renderSelects();
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>{x.classList.remove('active');x.classList.add('secondary')});b.classList.add('active');b.classList.remove('secondary');document.querySelectorAll('.tab').forEach(s=>s.classList.add('hidden'));document.getElementById(b.dataset.tab).classList.remove('hidden')}));
-document.getElementById('studentForm').addEventListener('submit',e=>{e.preventDefault();db.students.push({id:crypto.randomUUID(),name:document.getElementById('studentName').value.trim(),start:document.getElementById('startSurah').value.trim(),level:document.getElementById('level').value,goal:document.getElementById('dailyGoal').value,notes:document.getElementById('studentNotes').value.trim()});e.target.reset();save();});
-document.getElementById('reciteForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.recitations.push({id:crypto.randomUUID(),studentId:document.getElementById('reciteStudent').value,portion:document.getElementById('recitePortion').value.trim(),date:document.getElementById('reciteDate').value,memorization:document.getElementById('memorization').value,tajweed:document.getElementById('tajweed').value,mistakes:document.getElementById('mistakes').value.trim(),note:document.getElementById('teacherNote').value.trim()});let d=document.getElementById('reciteDate').value;e.target.reset();document.getElementById('reciteDate').value=d||dateNow();save();});
+document.getElementById('studentForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  try {
+    const { data: { user }, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      alert('يرجى تسجيل الدخول بحساب المحفّظ أولًا.');
+      return;
+    }
+
+    const student = {
+      teacher_user_id: user.id,
+      full: document.getElementById('studentName').value.trim(),
+      start_surah: document.getElementById('startSurah').value.trim(),
+      level: document.getElementById('level').value,
+      daily_goal: document.getElementById('dailyGoal').value,
+      note: document.getElementById('studentNotes').value.trim()
+    };
+
+    const { data, error } = await supabaseClient
+      .from('students')
+      .insert(student)
+      .select('id, full, start_surah, level, daily_goal, note')
+      .single();
+
+    if (error) throw error;
+
+    db.students.push({
+      id: data.id,
+      name: data.full,
+      start: data.start_surah || '',
+      level: data.level || '',
+      goal: data.daily_goal || '',
+      notes: data.note || ''
+    });
+
+    e.target.reset();
+    save();
+    alert('تم حفظ الطالب بنجاح.');
+  } catch (error) {
+    alert('تعذّر حفظ الطالب: ' + error.message);
+  }
+});
+  document.getElementById('reciteForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.recitations.push({id:crypto.randomUUID(),studentId:document.getElementById('reciteStudent').value,portion:document.getElementById('recitePortion').value.trim(),date:document.getElementById('reciteDate').value,memorization:document.getElementById('memorization').value,tajweed:document.getElementById('tajweed').value,mistakes:document.getElementById('mistakes').value.trim(),note:document.getElementById('teacherNote').value.trim()});let d=document.getElementById('reciteDate').value;e.target.reset();document.getElementById('reciteDate').value=d||dateNow();save();});
 document.getElementById('taskForm').addEventListener('submit',e=>{e.preventDefault();if(!db.students.length){alert('أضف طالبًا أولًا.');return}db.tasks.push({id:crypto.randomUUID(),studentId:document.getElementById('taskStudent').value,type:document.getElementById('taskType').value,due:document.getElementById('taskDue').value,portion:document.getElementById('taskPortion').value.trim(),instructions:document.getElementById('taskInstructions').value.trim(),done:false});e.target.reset();document.getElementById('taskDue').value=dateNow();save();});
 document.addEventListener('click',e=>{let t=e.target;if(t.dataset.deleteStudent){if(confirm('حذف الطالب وكل سجلاته وواجباته؟')){let id=t.dataset.deleteStudent;db.students=db.students.filter(s=>s.id!==id);db.recitations=db.recitations.filter(r=>r.studentId!==id);db.tasks=db.tasks.filter(x=>x.studentId!==id);save()}}if(t.dataset.deleteRecitation){db.recitations=db.recitations.filter(r=>r.id!==t.dataset.deleteRecitation);save()}if(t.dataset.deleteTask){db.tasks=db.tasks.filter(x=>x.id!==t.dataset.deleteTask);save()}if(t.dataset.toggleTask){db.tasks=db.tasks.map(x=>x.id===t.dataset.toggleTask?{...x,done:!x.done}:x);save()}});
 document.getElementById('exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fi-rihab-alquran-backup.json';a.click();URL.revokeObjectURL(a.href);document.getElementById('backupStatus').textContent='تم إنشاء ملف النسخة الاحتياطية على جهازك.'});
