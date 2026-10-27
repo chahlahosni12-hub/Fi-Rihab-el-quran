@@ -180,7 +180,7 @@ function render(){
  renderSelects();
 } 
   save();
-document.getElementById('studentForm').addEventListener('submit', async e => {
+  document.getElementById('studentForm').addEventListener('submit', async e => {
   e.preventDefault();
 
   try {
@@ -204,9 +204,9 @@ document.getElementById('studentForm').addEventListener('submit', async e => {
         start_surah: document.getElementById('startSurah').value.trim(),
         level: document.getElementById('level').value,
         daily_goal: document.getElementById('dailyGoal').value,
-notes: document.getElementById('studentNotes').value.trim()
+        notes: document.getElementById('studentNotes').value.trim()
       })
-.select('id, full, start_surah, level, daily_goal, notes')
+      .select('id, full, start_surah, level, daily_goal, notes')
       .single();
 
     if (error) throw error;
@@ -222,6 +222,12 @@ notes: document.getElementById('studentNotes').value.trim()
 
     save();
     e.target.reset();
+    alert('تم حفظ الطالب في قاعدة البيانات بنجاح.');
+
+  } catch (error) {
+    alert('تعذّر حفظ الطالب: ' + error.message);
+  }
+});
 document.querySelectorAll('nav button')
   } catch (error) {
     alert('تعذّر حفظ الطالب: ' + error.message);
