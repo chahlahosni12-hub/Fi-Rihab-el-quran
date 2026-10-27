@@ -198,7 +198,7 @@ function render(){
     const { data, error } = await supabaseClient
       .from('students')
       .insert({ 
-        .insert({
+       .insert({
   id: crypto.randomUUID(),
   teacher_id: user.id,
   teacher_user_id: user.id,
@@ -211,7 +211,7 @@ function render(){
         daily_goal: document.getElementById('dailyGoal').value,
         notes: document.getElementById('studentNotes').value.trim()
       })
-      .select('id, full, start_surah, level, daily_goal, notes')
+                    .select('id, full, start_surah, level, daily_goal, notes')
       .single();
 
     if (error) throw error;
