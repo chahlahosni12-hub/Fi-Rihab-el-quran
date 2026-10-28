@@ -188,7 +188,7 @@ $("emailSignup").addEventListener("submit", async e => {
     } else {
       showForm("loginForm");
       $("status").textContent =
-        "تم إنشاء طلب الحساب. أكّد بريدك الإلكتروني، ثم ارجع إلى «عندي حساب» للدخول.";
+        "تم إنشاء طلب الحساب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
     }
   } catch (error) {
     $("status").textContent =
@@ -231,7 +231,6 @@ $("phoneSignup").addEventListener("submit", async e => {
     button.disabled = false;
   }
 });
-
 $("verifyForm").addEventListener("submit", async e => {
   e.preventDefault();
   $("status").textContent = "جارٍ التحقق...";
