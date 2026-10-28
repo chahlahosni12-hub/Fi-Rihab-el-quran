@@ -187,6 +187,11 @@ $("emailSignup").addEventListener("submit", async e => {
     } else {
       $("status").textContent =
         "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
+      } else {
+  showForm("loginForm");
+  $("status").textContent =
+    "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
+}
       showForm("loginForm");
     }
   } catch (error) {
@@ -214,12 +219,13 @@ $("phoneSignup").addEventListener("submit", async e => {
     if (error) throw error;
 
     if (data.session) {
-      await loadStudent();
-    } else {
-      showForm("verifyForm");
-      $("status").textContent = "إذا كان التسجيل الهاتفي مفعّلًا، أدخل رمز SMS الذي وصلك.";
-    }
-  } catch (error) {
+       await loadStudent();
+} else {
+  showForm("loginForm");
+  $("status").textContent =
+    "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
+}
+   catch (error) {
     $("status").textContent = "تعذّر إنشاء الحساب: " + error.message;
   } finally {
     button.disabled = false;
