@@ -1,0 +1,283 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f32">
+<title>في رحاب القرآن | فضاء الطالب</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4ef;color:#1c2b23;font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:#173f32;color:#fff;padding:25px 16px;text-align:center}
+header h1{margin:0;color:#f1e5bd}
+header p{margin:5px 0 0}
+main{max-width:600px;margin:24px auto;padding:0 14px}
+.panel{background:#fff;border:1px solid #e0e6de;border-radius:16px;padding:20px;margin-bottom:16px}
+h2{font-size:21px;margin:0 0 12px}
+label{display:block;font-size:14px;font-weight:bold;margin:12px 0 5px}
+input,select{width:100%;padding:12px;border:1px solid #ccd7cd;border-radius:9px;font:inherit;background:#fff}
+button{border:0;border-radius:9px;background:#2e6847;color:#fff;padding:11px 14px;font:inherit;cursor:pointer}
+button:disabled{opacity:.6}
+button.secondary{background:#e8eee7;color:#254a34}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.actions button{flex:1}
+button.primary{width:100%;margin-top:16px}
+.status{padding:10px 0;white-space:pre-wrap}
+.muted{color:#69766d;font-size:13px}
+.hidden{display:none!important}
+.card{background:#f5f8f3;padding:13px;border-radius:10px;margin-top:10px}
+footer{text-align:center;color:#69766d;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>۞ في رحاب القرآن</h1>
+<p>فضاء الطالب للحفظ والمراجعة</p>
+</header>
+<main>
+<section id="authPanel" class="panel">
+<h2>مرحبًا بك في فضاء الطالب</h2>
+<p class="muted">استعمل رمز الطالب الذي أعطاك إياه المحفّظ لربط حسابك بملفك.</p>
+
+<div class="actions">
+<button type="button" id="showEmail" class="secondary">عندي إيميل</button>
+<button type="button" id="showPhone" class="secondary">سأستعمل الهاتف</button>
+<button type="button" id="showLogin" class="secondary">عندي حساب</button>
+</div>
+
+<form id="emailSignup">
+<h2>إنشاء حساب بالإيميل</h2>
+<label for="emailCode">رمز الطالب</label>
+<input id="emailCode" required autocomplete="off" placeholder="الرمز الذي أعطاك إياه المحفّظ">
+<label for="signupEmail">البريد الإلكتروني</label>
+<input id="signupEmail" type="email" required autocomplete="email">
+<label for="emailPassword">كلمة السر</label>
+<input id="emailPassword" type="password" required minlength="8" autocomplete="new-password">
+<label for="emailConfirm">تأكيد كلمة السر</label>
+<input id="emailConfirm" type="password" required minlength="8" autocomplete="new-password">
+<button class="primary" type="submit">إنشاء الحساب</button>
+</form>
+
+<form id="phoneSignup" class="hidden">
+<h2>إنشاء حساب برقم الهاتف</h2>
+<label for="phoneCode">رمز الطالب</label>
+<input id="phoneCode" required autocomplete="off" placeholder="الرمز الذي أعطاك إياه المحفّظ">
+<label for="signupPhone">رقم الهاتف مع رمز الدولة</label>
+<input id="signupPhone" type="tel" required autocomplete="tel" placeholder="+216XXXXXXXX">
+<label for="phonePassword">كلمة السر</label>
+<input id="phonePassword" type="password" required minlength="8" autocomplete="new-password">
+<label for="phoneConfirm">تأكيد كلمة السر</label>
+<input id="phoneConfirm" type="password" required minlength="8" autocomplete="new-password">
+<button class="primary" type="submit">إنشاء الحساب وإرسال رمز التحقق</button>
+<p class="muted">الدخول بالهاتف يتطلب تفعيل المصادقة الهاتفية وخدمة الرسائل القصيرة في Supabase.</p>
+</form>
+
+<form id="verifyForm" class="hidden">
+<h2>تأكيد رقم الهاتف</h2>
+<p>أدخل رمز التحقق الذي وصلك برسالة نصية.</p>
+<label for="otp">رمز التحقق</label>
+<input id="otp" inputmode="numeric" autocomplete="one-time-code" required>
+<button class="primary" type="submit">تأكيد ودخول</button>
+</form>
+
+<form id="loginForm" class="hidden">
+<h2>دخول الطالب</h2>
+<label for="loginMethod">طريقة الدخول</label>
+<select id="loginMethod">
+<option value="email">البريد الإلكتروني</option>
+<option value="phone">رقم الهاتف</option>
+</select>
+<label for="loginIdentity">الإيميل أو الهاتف</label>
+<input id="loginIdentity" required autocomplete="username">
+<label for="loginPassword">كلمة السر</label>
+<input id="loginPassword" type="password" required autocomplete="current-password">
+<button class="primary" type="submit">دخول</button>
+</form>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</section>
+
+<section id="studentPanel" class="panel hidden">
+<h2>فضاء الطالب</h2>
+<p id="welcome"></p>
+<div id="profile" class="card"></div>
+<div class="card">
+<strong>واجباتي وتسميعي</strong>
+<p class="muted">تم تسجيل الدخول. الخطوة التالية هي ربط قائمة الواجبات ورفع التسجيلات الصوتية بقاعدة البيانات.</p>
+</div>
+<button id="logout" class="secondary">تسجيل الخروج</button>
+</section>
+</main>
+<footer>في رحاب القرآن · فضاء الطالب</footer>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://yysruuckpfqzymvpioce.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YxRCrAWRLzmn7DHD2nk1Ig_GniEdvxU";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+let pendingPhone = "";
+
+function showForm(name) {
+  ["emailSignup","phoneSignup","verifyForm","loginForm"].forEach(id =>
+    $(id).classList.toggle("hidden", id !== name)
+  );
+  $("status").textContent = "";
+}
+$("showEmail").onclick = () => showForm("emailSignup");
+$("showPhone").onclick = () => showForm("phoneSignup");
+$("showLogin").onclick = () => showForm("loginForm");
+
+function passwordMatches(password, confirmation) {
+  if (password.length < 8) throw new Error("اجعل كلمة السر 8 أحرف على الأقل.");
+  if (password !== confirmation) throw new Error("كلمتا السر غير متطابقتين.");
+}
+
+function studentMetadata(code) {
+  return { data: { role: "student", student_code: code.trim().toUpperCase() } };
+}
+
+async function loadStudent() {
+  const { data: userResult, error: userError } =
+    await supabaseClient.auth.getUser();
+  if (userError) throw userError;
+  if (!userResult.user) throw new Error("يرجى الدخول بحساب الطالب.");
+
+  const { data: student, error } = await supabaseClient
+    .from("students")
+    .select("*")
+    .eq("student_user_id", userResult.user.id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error("تم الدخول، لكن تعذّر عرض ملف الطالب. يلزم ضبط صلاحيات قراءة ملف الطالب في قاعدة البيانات.");
+  }
+  if (!student) {
+    throw new Error("لم نعثر على ملف مرتبط بهذا الحساب. تأكد من رمز الطالب مع المحفّظ.");
+  }
+
+  $("authPanel").classList.add("hidden");
+  $("studentPanel").classList.remove("hidden");
+  $("welcome").textContent = "مرحبًا " + (student.full_name || student.full || "بك") + ".";
+  $("profile").textContent =
+    "موضع الحفظ: " + (student.start_surah || "لم يحدد") +
+    " — المستوى: " + (student.level || "لم يحدد") +
+    " — المقدار المستهدف: " + (student.daily_goal || "لم يحدد");
+}
+
+$("emailSignup").addEventListener("submit", async e => {
+  e.preventDefault();
+  const button = e.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  $("status").textContent = "جارٍ إنشاء الحساب...";
+  try {
+    const password = $("emailPassword").value;
+    passwordMatches(password, $("emailConfirm").value);
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: $("signupEmail").value.trim().toLowerCase(),
+      password,
+      options: studentMetadata($("emailCode").value)
+    });
+    if (error) throw error;
+
+    if (data.session) {
+      await loadStudent();
+    } else {
+      $("status").textContent =
+        "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
+      showForm("loginForm");
+    }
+  } catch (error) {
+    $("status").textContent = "تعذّر إنشاء الحساب: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("phoneSignup").addEventListener("submit", async e => {
+  e.preventDefault();
+  const button = e.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  $("status").textContent = "جارٍ إنشاء الحساب وإرسال رمز التحقق...";
+  try {
+    const password = $("phonePassword").value;
+    passwordMatches(password, $("phoneConfirm").value);
+    pendingPhone = $("signupPhone").value.trim();
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      phone: pendingPhone,
+      password,
+      options: studentMetadata($("phoneCode").value)
+    });
+    if (error) throw error;
+
+    if (data.session) {
+      await loadStudent();
+    } else {
+      showForm("verifyForm");
+      $("status").textContent = "إذا كان التسجيل الهاتفي مفعّلًا، أدخل رمز SMS الذي وصلك.";
+    }
+  } catch (error) {
+    $("status").textContent = "تعذّر إنشاء الحساب: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("verifyForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("status").textContent = "جارٍ التحقق...";
+  try {
+    const { error } = await supabaseClient.auth.verifyOtp({
+      phone: pendingPhone,
+      token: $("otp").value.trim(),
+      type: "sms"
+    });
+    if (error) throw error;
+    await loadStudent();
+  } catch (error) {
+    $("status").textContent = "تعذّر التحقق: " + error.message;
+  }
+});
+
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const button = e.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  $("status").textContent = "جارٍ تسجيل الدخول...";
+  try {
+    const method = $("loginMethod").value;
+    const identity = $("loginIdentity").value.trim();
+    const credentials = { password: $("loginPassword").value };
+    credentials[method] = method === "email" ? identity.toLowerCase() : identity;
+
+    const { error } = await supabaseClient.auth.signInWithPassword(credentials);
+    if (error) throw error;
+    await loadStudent();
+  } catch (error) {
+    $("status").textContent = "تعذّر الدخول: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("logout").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  $("studentPanel").classList.add("hidden");
+  $("authPanel").classList.remove("hidden");
+  showForm("loginForm");
+});
+
+(async () => {
+  try {
+    const { data } = await supabaseClient.auth.getSession();
+    if (data.session) await loadStudent();
+  } catch (error) {
+    $("status").textContent = error.message;
+  }
+})();
+</script>
+</body>
+</html>
