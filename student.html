@@ -165,12 +165,12 @@ async function loadStudent() {
     " — المستوى: " + (student.level || "لم يحدد") +
     " — المقدار المستهدف: " + (student.daily_goal || "لم يحدد");
 }
-
 $("emailSignup").addEventListener("submit", async e => {
   e.preventDefault();
-  const button = e.target.querySelector("button[type=submit]");
+  const button = e.target.querySelector('button[type="submit"]');
   button.disabled = true;
   $("status").textContent = "جارٍ إنشاء الحساب...";
+
   try {
     const password = $("emailPassword").value;
     passwordMatches(password, $("emailConfirm").value);
@@ -180,22 +180,19 @@ $("emailSignup").addEventListener("submit", async e => {
       password,
       options: studentMetadata($("emailCode").value)
     });
+
     if (error) throw error;
 
     if (data.session) {
       await loadStudent();
     } else {
-      $("status").textContent =
-        "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
-      } else {
-  showForm("loginForm");
-  $("status").textContent =
-    "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
-}
       showForm("loginForm");
+      $("status").textContent =
+        "تم إنشاء طلب الحساب. أكّد بريدك الإلكتروني، ثم ارجع إلى «عندي حساب» للدخول.";
     }
   } catch (error) {
-    $("status").textContent = "تعذّر إنشاء الحساب: " + error.message;
+    $("status").textContent =
+      "تعذّر إنشاء الحساب: " + error.message;
   } finally {
     button.disabled = false;
   }
@@ -203,9 +200,10 @@ $("emailSignup").addEventListener("submit", async e => {
 
 $("phoneSignup").addEventListener("submit", async e => {
   e.preventDefault();
-  const button = e.target.querySelector("button[type=submit]");
+  const button = e.target.querySelector('button[type="submit"]');
   button.disabled = true;
-  $("status").textContent = "جارٍ إنشاء الحساب وإرسال رمز التحقق...";
+  $("status").textContent = "جارٍ إنشاء الحساب...";
+
   try {
     const password = $("phonePassword").value;
     passwordMatches(password, $("phoneConfirm").value);
@@ -216,17 +214,19 @@ $("phoneSignup").addEventListener("submit", async e => {
       password,
       options: studentMetadata($("phoneCode").value)
     });
+
     if (error) throw error;
 
     if (data.session) {
-       await loadStudent();
-} else {
-  showForm("loginForm");
-  $("status").textContent =
-    "تم إنشاء الطلب. افتح بريدك الإلكتروني وأكّد الحساب، ثم ارجع إلى «عندي حساب» للدخول.";
-}
-   catch (error) {
-    $("status").textContent = "تعذّر إنشاء الحساب: " + error.message;
+      await loadStudent();
+    } else {
+      showForm("verifyForm");
+      $("status").textContent =
+        "أدخل رمز التحقق الذي وصلك برسالة نصية.";
+    }
+  } catch (error) {
+    $("status").textContent =
+      "تعذّر إنشاء الحساب: " + error.message;
   } finally {
     button.disabled = false;
   }
