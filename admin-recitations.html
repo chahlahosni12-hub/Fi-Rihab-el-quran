@@ -104,7 +104,7 @@ async function loadRecitations() {
   }
 
   const { data, error } = await supabaseClient
-    .from('Recitations')
+    .from('recitations')
     .select('*')
     .order('created_at', { ascending: false });
 
