@@ -12,7 +12,8 @@ main{max-width:850px;margin:24px auto;padding:0 14px}.panel{background:#fff;bord
 label{display:block;font-weight:bold;margin:12px 0 5px}input{width:100%;padding:12px;border:1px solid #ccd7cd;border-radius:9px;font:inherit}
 button{border:0;border-radius:9px;background:#2e6847;color:#fff;padding:11px 15px;font:inherit;cursor:pointer}button:disabled{opacity:.6}.secondary{background:#e8eee7;color:#254a34}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.status{white-space:pre-wrap}.muted{color:#69766d;font-size:13px}.hidden{display:none!important}
-.recitation{border:1px solid #e0e6de;border-radius:12px;padding:15px;margin:12px 0;background:#fbfcf9}.recitation h3{margin:0 0 8px;font-size:18px}.recitation p{margin:4px 0}.recitation audio{display:block;width:100%;margin-top:12px}.empty{background:#f7f9f5;color:#69766d;padding:16px;border-radius:12px;text-align:center}footer{text-align:center;color:#69766d;font-size:12px;padding:16px}
+.recitation{border:1px solid #e0e6de;border-radius:12px;padding:15px;margin:12px 0;background:#fbfcf9}.recitati
+  on h3{margin:0 0 8px;font-size:18px}.recitation p{margin:4px 0}.recitation audio{display:block;width:100%;margin-top:12px}.empty{background:#f7f9f5;color:#69766d;padding:16px;border-radius:12px;text-align:center}footer{text-align:center;color:#69766d;font-size:12px;padding:16px}
 </style>
 </head>
 <body>
@@ -67,6 +68,8 @@ async function loadRecitations() {
     }
     const teacherId = authData.user.id;
     const { data: rows, error } = await supabaseClient
+      const { data: rows, error } = await supabaseClient
+  .schema('public')
       .from('Recitations')
       .select('id, student_id, teacher_id, surah, verse_start, verse_end, recitation_date, grade, mistakes, teacher_notes, audio_url, created_at, student_name')
       .eq('teacher_id', teacherId)
