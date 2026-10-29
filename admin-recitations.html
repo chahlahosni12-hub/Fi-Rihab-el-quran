@@ -67,13 +67,13 @@ async function loadRecitations() {
     }
     const teacherId = authData.user.id;
     const { data: rows, error } = await supabaseClient
-      .from('recitations')
+      .from('Recitations')
       .select('id, student_id, teacher_id, surah, verse_start, verse_end, recitation_date, grade, mistakes, teacher_notes, audio_url, created_at, student_name')
       .eq('teacher_id', teacherId)
       .order('created_at', { ascending: false });
     if (error) throw error;
     const { data: students, error: studentsError } = await supabaseClient
-      .from('students')
+      .from('Students')
       .select('id, full_name, full')
       .eq('teacher_id', teacherId);
     const names = new Map((studentsError ? [] : (students || [])).map(s => [s.id, s.full_name || s.full || 'طالب']));
