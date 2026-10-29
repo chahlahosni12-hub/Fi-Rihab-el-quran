@@ -67,7 +67,6 @@ async function loadRecitations() {
       return;
     }
     const teacherId = authData.user.id;
-    const { data: rows, error } = await supabaseClient
       const { data: rows, error } = await supabaseClient
   .schema('public')
 .from('recitations')
