@@ -198,7 +198,7 @@ async function getLinkedStudent(code = '') {
 
   const user = userData.user;
   let { data: student, error } = await supabaseClient
-    .from('students')
+    .from('student')
     .select('*')
     .eq('student_user_id', user.id)
     .maybeSingle();
