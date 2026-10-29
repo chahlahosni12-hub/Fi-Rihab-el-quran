@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f32">
+<title>في رحاب القرآن | مراجعة التسميعات</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1f4ef;color:#1c2b23;font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:#173f32;color:#fff;text-align:center;padding:24px 16px}header h1{margin:0;color:#f1e5bd}
+main{max-width:850px;margin:24px auto;padding:0 14px}.panel{background:#fff;border:1px solid #e0e6de;border-radius:16px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:bold;margin:12px 0 5px}input{width:100%;padding:12px;border:1px solid #ccd7cd;border-radius:9px;font:inherit}
+button{border:0;border-radius:9px;background:#2e6847;color:#fff;padding:11px 15px;font:inherit;cursor:pointer}button:disabled{opacity:.6}.secondary{background:#e8eee7;color:#254a34}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.status{white-space:pre-wrap}.muted{color:#69766d;font-size:13px}.hidden{display:none!important}
+.recitation{border:1px solid #e0e6de;border-radius:12px;padding:15px;margin:12px 0;background:#fbfcf9}.recitation h3{margin:0 0 8px;font-size:18px}.recitation p{margin:4px 0}.recitation audio{display:block;width:100%;margin-top:12px}.empty{background:#f7f9f5;color:#69766d;padding:16px;border-radius:12px;text-align:center}footer{text-align:center;color:#69766d;font-size:12px;padding:16px}
+</style>
+</head>
+<body>
+<header><h1>۞ في رحاب القرآن</h1><p>لوحة المحفّظ — مراجعة تسميع الطلبة</p></header>
+<main>
+<section id="loginPanel" class="panel">
+<h2>دخول المحفّظ</h2>
+<p class="muted">استعمل نفس البريد الإلكتروني وكلمة السر الخاصة بحساب الإدارة.</p>
+<form id="loginForm">
+<label for="email">البريد الإلكتروني</label><input id="email" type="email" required autocomplete="username">
+<label for="password">كلمة السر</label><input id="password" type="password" required autocomplete="current-password">
+<div class="actions"><button type="submit">دخول</button></div>
+</form><p id="loginStatus" class="status" role="status" aria-live="polite"></p>
+</section>
+<section id="appPanel" class="panel hidden">
+<div class="actions" style="justify-content:space-between"><h2 style="margin:0">التسجيلات الواردة</h2><button id="refreshBtn" class="secondary" type="button">تحديث التسجيلات</button><button id="logoutBtn" type="button" class="secondary">تسجيل الخروج</button></div>
+<p class="muted">تظهر هنا التسجيلات المحفوظة في قاعدة البيانات للمحفّظ المسجّل دخوله. رابط الاستماع مؤقت ويُنشأ عند التحديث.</p>
+<p id="listStatus" class="status" role="status" aria-live="polite"></p>
+<div id="recitationsList"></div>
+</section>
+</main><footer>في رحاب القرآن</footer>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+'use strict';
+const SUPABASE_URL = 'https://yysruuckpfqzymvpioce.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_YxRCrAWRLzmn7DHD2nk1Ig_GniEdvxU';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+function addText(parent, tag, text, className='') {
+  const el = document.createElement(tag);
+  el.textContent = text == null ? '' : String(text);
+  if (className) el.className = className;
+  parent.appendChild(el);
+  return el;
+}
+function showApp() {
+  $('loginPanel').classList.add('hidden');
+  $('appPanel').classList.remove('hidden');
+}
+async function loadRecitations() {
+  $('refreshBtn').disabled = true;
+  $('listStatus').textContent = 'جارٍ تحميل التسجيلات...';
+  $('recitationsList').replaceChildren();
+  try {
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+    if (authError) throw authError;
+    if (!authData.user) {
+      $('loginPanel').classList.remove('hidden');
+      $('appPanel').classList.add('hidden');
+      $('listStatus').textContent = 'يرجى تسجيل الدخول بحساب المحفّظ.';
+      return;
+    }
+    const teacherId = authData.user.id;
+    const { data: rows, error } = await supabaseClient
+      .from('recitations')
+      .select('id, student_id, teacher_id, surah, verse_start, verse_end, recitation_date, grade, mistakes, teacher_notes, audio_url, created_at, student_name')
+      .eq('teacher_id', teacherId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    const { data: students, error: studentsError } = await supabaseClient
+      .from('students')
+      .select('id, full_name, full')
+      .eq('teacher_id', teacherId);
+    const names = new Map((studentsError ? [] : (students || [])).map(s => [s.id, s.full_name || s.full || 'طالب']));
+    if (!rows || rows.length === 0) {
+      $('listStatus').textContent = '';
+      $('recitationsList').appendChild(Object.assign(document.createElement('div'), { className: 'empty', textContent: 'لا توجد تسجيلات مسجّلة لهذا الحساب حتى الآن.' }));
+      return;
+    }
+    let withAudio = 0;
+    for (const row of rows) {
+      const card = document.createElement('article');
+      card.className = 'recitation';
+      const studentName = row.student_name || names.get(row.student_id) || 'طالب';
+      addText(card, 'h3', studentName);
+      addText(card, 'p', 'المطلوب: ' + (row.surah || 'غير محدد'));
+      addText(card, 'p', 'التاريخ: ' + (row.recitation_date ? new Date(row.recitation_date).toLocaleString('ar-TN') : row.created_at ? new Date(row.created_at).toLocaleString('ar-TN') : 'غير محدد'));
+      if (row.grade !== null && row.grade !== undefined) addText(card, 'p', 'التقييم: ' + row.grade);
+      if (row.mistakes) addText(card, 'p', 'الأخطاء: ' + row.mistakes);
+      if (row.teacher_notes) addText(card, 'p', 'ملاحظات المحفّظ: ' + row.teacher_notes);
+      if (row.audio_url) {
+        let audioUrl = row.audio_url;
+        if (!/^https?:\/\//i.test(audioUrl)) {
+          const { data: signed, error: signedError } = await supabaseClient.storage
+            .from('recitation').createSignedUrl(audioUrl, 3600);
+          if (signedError) {
+            addText(card, 'p', 'تعذّر إنشاء رابط الاستماع: ' + signedError.message, 'muted');
+          } else {
+            audioUrl = signed.signedUrl;
+          }
+        }
+        if (audioUrl && /^https?:\/\//i.test(audioUrl)) {
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.preload = 'none';
+          audio.src = audioUrl;
+          audio.setAttribute('aria-label', 'تسجيل تسميع ' + studentName);
+          card.appendChild(audio);
+          withAudio++;
+        }
+      } else {
+        addText(card, 'p', 'لا يوجد ملف صوتي مرفق بهذا السجل.', 'muted');
+      }
+      $('recitationsList').appendChild(card);
+    }
+    $('listStatus').textContent = 'عدد السجلات: ' + rows.length + ' — تسجيلات صوتية: ' + withAudio;
+  } catch (error) {
+    $('listStatus').textContent = 'تعذّر تحميل التسجيلات: ' + (error.message || String(error));
+  } finally {
+    $('refreshBtn').disabled = false;
+  }
+}
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const button = e.currentTarget.querySelector('button[type="submit"]');
+  button.disabled = true;
+  $('loginStatus').textContent = 'جارٍ تسجيل الدخول...';
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: $('email').value.trim().toLowerCase(), password: $('password').value
+    });
+    if (error) throw error;
+    showApp();
+    await loadRecitations();
+  } catch (error) {
+    $('loginStatus').textContent = 'تعذّر الدخول: ' + (error.message || String(error));
+  } finally { button.disabled = false; }
+});
+$('refreshBtn').addEventListener('click', loadRecitations);
+$('logoutBtn').addEventListener('click', async () => {
+  const { error } = await supabaseClient.auth.signOut();
+  if (error) { $('listStatus').textContent = 'تعذّر تسجيل الخروج: ' + error.message; return; }
+  $('appPanel').classList.add('hidden');
+  $('loginPanel').classList.remove('hidden');
+  $('loginStatus').textContent = 'تم تسجيل الخروج.';
+});
+(async () => {
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) { $('loginStatus').textContent = error.message; return; }
+  if (data.session) { showApp(); await loadRecitations(); }
+})();
+</script>
+</body>
+</html>
