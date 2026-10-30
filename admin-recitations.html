@@ -103,11 +103,11 @@ async function loadRecitations() {
     return;
   }
 
-  // جلب التسميعات من جدول Recitation
+  // تم التصحيح هنا ليتطابق مع اسم الجدول في قاعدة البيانات: recitations
   const { data, error } = await supabaseClient
-    .from('Recitation')
+    .from('recitations')
     .select('*')
-    .order('recitation_date', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     showMessage(
@@ -128,7 +128,6 @@ async function loadRecitations() {
 
   let students = [];
   if (studentIds.length > 0) {
-    // تم التصحيح هنا ليتطابق مع اسم الجدول الصحيح في قاعدة البيانات: students
     const result = await supabaseClient
       .from('students')
       .select('id, full_name, student_code')
