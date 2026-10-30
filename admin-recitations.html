@@ -103,7 +103,7 @@ async function loadRecitations() {
     return;
   }
 
-  // تم تصحيح اسم الجدول هنا ليطابق قاعدة البيانات وصفحة الطالب (Recitation)
+  // جلب التسميعات من جدول Recitation
   const { data, error } = await supabaseClient
     .from('Recitation')
     .select('*')
@@ -111,15 +111,14 @@ async function loadRecitations() {
 
   if (error) {
     showMessage(
-      'تعذّر جلب التسجيلات:\n' + error.message +
-      '\n\nتثبّت من اسم الجدول وصلاحيات القراءة (RLS) في Supabase.',
+      'تعذّر جلب التسجيلات:\n' + error.message,
       true
     );
     return;
   }
 
   if (!data || data.length === 0) {
-    showMessage('ما ظهرت حتى تسجيلات. إذا الطلبة بعثوا تسجيلات، يلزمنا نراجعوا صلاحيات Supabase وطريقة الإرسال.');
+    showMessage('ما ظهرت حتى تسجيلات حالياً.');
     return;
   }
 
@@ -129,8 +128,9 @@ async function loadRecitations() {
 
   let students = [];
   if (studentIds.length > 0) {
+    // تم التصحيح هنا ليتطابق مع اسم الجدول الصحيح في قاعدة البيانات: students
     const result = await supabaseClient
-      .from('Student')
+      .from('students')
       .select('id, full_name, student_code')
       .in('id', studentIds);
 
