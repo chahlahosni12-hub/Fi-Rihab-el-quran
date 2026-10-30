@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -302,7 +301,8 @@ async function refreshAll() {
   showStatus('dashboardStatus', 'جارٍ تحميل البيانات...');
   try {
     const [studentResult, recitationResult, taskResult] = await Promise.all([
-      supabaseClient.from('Student').select('*').eq('teacher_id', currentUser.id),
+      // تم التصحيح هنا ليتطابق مع اسم الجدول في قاعدة البيانات: students
+      supabaseClient.from('students').select('*').eq('teacher_id', currentUser.id),
       supabaseClient.from('Recitation').select('*').eq('teacher_id', currentUser.id).order('created_at', {ascending:false}).limit(100),
       supabaseClient.from('Homework').select('*').eq('teacher_id', currentUser.id).order('created_at', {ascending:false}).limit(100)
     ]);
@@ -315,7 +315,7 @@ async function refreshAll() {
     renderStudents();
     renderRecitations();
     renderTasks();
-    showStatus('dashboardStatus', 'تم تحميل البيانات من قاعدة البيانات. إذا ظهرت القوائم فارغة، تحقّق من وجود سجلات وصلاحيات القراءة في Supabase.');
+    showStatus('dashboardStatus', 'تم تحميل البيانات بنجاح.');
   } catch (error) {
     showError('dashboardStatus', error);
   }
@@ -366,7 +366,8 @@ $('studentForm').addEventListener('submit', async e => {
     requireLogin();
     const name = $('studentName').value.trim();
     const email = $('studentEmail').value.trim().toLowerCase();
-    const {data, error} = await supabaseClient.from('Student').insert({
+    // تم التصحيح هنا أيضاً إلى students
+    const {data, error} = await supabaseClient.from('students').insert({
       id: crypto.randomUUID(),
       teacher_id: currentUser.id,
       full_name: name,
@@ -546,4 +547,3 @@ document.addEventListener('click', async e => {
 </script>
 </body>
 </html>
-
