@@ -103,10 +103,11 @@ async function loadRecitations() {
     return;
   }
 
+  // تم تصحيح اسم الجدول هنا ليطابق قاعدة البيانات وصفحة الطالب (Recitation)
   const { data, error } = await supabaseClient
-    .from('recitations')
+    .from('Recitation')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('recitation_date', { ascending: false });
 
   if (error) {
     showMessage(
@@ -130,7 +131,7 @@ async function loadRecitations() {
   if (studentIds.length > 0) {
     const result = await supabaseClient
       .from('Student')
-      .select('id, full_name')
+      .select('id, full_name, student_code')
       .in('id', studentIds);
 
     if (!result.error && result.data) {
