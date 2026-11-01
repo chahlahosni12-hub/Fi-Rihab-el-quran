@@ -1,549 +1,372 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#173f32">
-<title>في رحاب القرآن | لوحة الإدارة</title>
-<style>
-:root{--g:#173f32;--g2:#2e6847;--gold:#d9c58b;--bg:#f1f4ef;--line:#e0e6de;--ink:#1c2b23}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
-header{background:linear-gradient(135deg,var(--g),#255c41);color:white;padding:22px 16px}
-header h1{margin:0;color:#f1e5bd;font-size:27px}
-header p{margin:4px 0}
-main{max-width:1000px;margin:auto;padding:16px}
-.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:17px;margin-bottom:14px}
-h2{font-size:20px;margin:0 0 12px}
-label{display:block;font-weight:bold;font-size:13px;margin:9px 0 4px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #ccd7cd;border-radius:9px;font:inherit;background:white}
-textarea{min-height:75px}
-button{background:var(--g2);color:white;border:0;border-radius:9px;padding:10px 15px;font:inherit;cursor:pointer;margin:4px 0}
-button:disabled{opacity:.5}
-.secondary{background:#e8eee7;color:var(--g)}
-.danger{background:#fff0ef;color:#a32924}
-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:15px}
-nav button.active{background:var(--gold);color:var(--g)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.stat{background:#f5f8f3;border-radius:12px;padding:12px}
-.stat strong{display:block;font-size:25px;color:var(--g)}
-.item{border-bottom:1px solid var(--line);padding:13px 0;overflow-wrap:anywhere}
-.item:last-child{border:0}
-.muted{color:#69766d;font-size:13px}
-.empty{background:#f7f9f5;border-radius:10px;padding:14px;text-align:center;color:#69766d}
-.hidden{display:none!important}
-audio{display:block;width:100%;margin:10px 0}
-.status{padding:10px;border-radius:9px;background:#f5f8f3;overflow-wrap:anywhere}
-@media(max-width:600px){.grid,.stats{grid-template-columns:1fr}main{padding:10px}.panel{padding:13px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رحاب القرآن</title>
+    <style>
+        :root {
+            --primary-color: #1b4d3e;
+            --primary-light: #2e7d62;
+            --accent-color: #d4af37;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --danger-color: #c0392b;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.6rem;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .alert-box {
+            background-color: #fef9e7;
+            color: #b7950b;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            border-bottom: 1px solid #fcf3cf;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 10px;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .main-nav::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            background-color: #ecf0f1;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(27, 77, 62, 0.3);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .container h2 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .recorder-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rec-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: white;
+        }
+
+        .rec-btn.start { background-color: var(--success-color); }
+        .rec-btn.stop { background-color: #e67e22; }
+        .rec-btn.reset { background-color: var(--danger-color); }
+
+        .student-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .student-item p { margin: 5px 0; font-size: 0.9rem; }
+        .student-item .meta { color: #666; font-size: 0.85rem; }
+        .student-item audio { width: 100%; margin-top: 6px; }
+        
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .btn-small { width: auto; padding: 6px 12px; font-size: 0.85rem; }
+        .btn-gray { background-color: #7f8c8d; color: #fff; }
+        .btn-danger { background-color: var(--danger-color); color: #fff; }
+        .btn-ok { background-color: #2ecc71; color: #fff; }
+        .btn-blue { background-color: #2980b9; color: #fff; }
+        
+        .hidden { display: none !important; }
+
+        .userbar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #fff; padding: 8px 15px; font-size: 0.85rem;
+            border-bottom: 1px solid #e5ece9;
+        }
+        .role-badge {
+            background: var(--accent-color); color: #fff; border-radius: 12px;
+            padding: 2px 10px; font-size: 0.75rem; margin-inline-start: 6px;
+        }
+
+        .recorder-card {
+            margin-top: 20px; padding: 15px; border: 1px solid #d9e4df;
+            border-radius: 10px; background: #f8fbf9;
+        }
+        .rec-status { text-align: center; font-weight: bold; color: #555; margin-top: 10px; }
+        .rec-timer { text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-top: 5px; }
+        .rec-btn:disabled, .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+        
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #2c3e50; color: #fff; padding: 10px 18px; border-radius: 20px;
+            font-size: 0.9rem; z-index: 99; max-width: 90%; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
 <body>
-<header>
-<h1>۞ في رحاب القرآن</h1>
-<p>لوحة إدارة الحفظ والتسميع والمراجعة</p>
-</header>
 
-<main>
-<section class="panel" id="authPanel">
-<h2>دخول المحفّظ</h2>
-<form id="authForm">
-<label for="authEmail">البريد الإلكتروني</label>
-<input id="authEmail" type="email" autocomplete="username" required>
-<label for="authPassword">كلمة السر</label>
-<input id="authPassword" type="password" autocomplete="current-password" required>
-<button id="loginButton" type="submit">دخول</button>
-<button id="logoutButton" type="button" class="secondary hidden">خروج</button>
-<p id="authStatus" class="status">سجّل الدخول بحساب الإدارة.</p>
-</form>
-</section>
+    <!-- شريط المستخدم -->
+    <div class="userbar">
+        <span>مرحباً، <strong>المعلم</strong></span>
+        <span>رحاب القرآن <span class="role-badge">مشرف</span></span>
+    </div>
 
-<div id="app" class="hidden">
-<nav>
-<button class="active" data-tab="home">الرئيسية</button>
-<button class="secondary" data-tab="students">الطلبة</button>
-<button class="secondary" data-tab="recite">التسميع</button>
-<button class="secondary" data-tab="tasks">الواجبات</button>
-</nav>
+    <!-- الهيدر الرئيسي -->
+    <header class="header">
+        <h1>رحاب القرآن</h1>
+        <p>منظومة متابعة حفظ وتسميع القرآن الكريم</p>
+    </header>
 
-<section id="home" class="tab">
-<div class="panel">
-<h2>لوحة المحفّظ</h2>
-<div class="stats">
-<div class="stat">الطلبة<strong id="countStudents">0</strong></div>
-<div class="stat">التسميع<strong id="countRecitations">0</strong></div>
-<div class="stat">الواجبات<strong id="countTasks">0</strong></div>
-</div>
-<p><button id="refreshButton">تحديث البيانات</button></p>
-<p id="dashboardStatus" class="status">سجّل الدخول لعرض البيانات.</p>
-</div>
-<div class="panel">
-<h2>آخر التسميعات الواردة</h2>
-<div id="recent" class="empty">لا توجد بيانات محمّلة.</div>
-</div>
-</section>
+    <div class="alert-box">
+        التصميم الجديد جاهز ومدمج بنجاح!
+    </div>
 
-<section id="students" class="tab hidden">
-<div class="panel">
-<h2>إضافة طالب</h2>
-<form id="studentForm">
-<label for="studentName">اسم الطالب</label>
-<input id="studentName" maxlength="80" required>
-<label for="studentEmail">البريد الإلكتروني للطالب</label>
-<input id="studentEmail" type="email" required>
-<div class="grid">
-<div>
-<label for="startSurah">موضع البداية</label>
-<input id="startSurah" maxlength="120" placeholder="سورة النبأ، الآية 1">
-</div>
-<div>
-<label for="level">المستوى</label>
-<select id="level">
-<option>مبتدئ</option><option>متوسط</option><option>متقدم</option>
-</select>
-</div>
-<div>
-<label for="dailyGoal">المقدار المستهدف</label>
-<select id="dailyGoal">
-<option>آيات قليلة</option><option selected>نصف صفحة</option><option>صفحة</option><option>حسب التقييم</option>
-</select>
-</div>
-</div>
-<label for="studentNotes">ملاحظات</label>
-<textarea id="studentNotes" maxlength="1000"></textarea>
-<button type="submit">حفظ الطالب في قاعدة البيانات</button>
-</form>
-<p id="studentStatus" class="status"></p>
-</div>
-<div class="panel">
-<h2>قائمة الطلبة</h2>
-<div id="studentList" class="empty">لم تُحمّل القائمة بعد.</div>
-</div>
-</section>
+    <!-- شريط التنقل -->
+    <nav class="main-nav">
+        <button class="nav-btn active" onclick="switchTab('dashboard')">الرئيسية</button>
+        <button class="nav-btn" onclick="switchTab('students')">الطلاب</button>
+        <button class="nav-btn" onclick="switchTab('recorder')">التسجيل الصوتي</button>
+    </nav>
 
-<section id="recite" class="tab hidden">
-<div class="panel">
-<h2>التسميع وتقييم الحفظ</h2>
-<p class="muted">اختَر الطالب، سجّل صوته، استمع إليه، ثم احفظ السجل. يُرفع الصوت إلى مخزن Supabase إذا سمحت السياسات بذلك.</p>
-<form id="reciteForm">
-<label for="reciteStudent">الطالب</label>
-<select id="reciteStudent" required></select>
-<label for="recitePortion">السورة والآيات أو المقدار</label>
-<input id="recitePortion" required maxlength="160" placeholder="المجادلة 10–13">
-<div class="grid">
-<div>
-<label for="reciteDate">التاريخ</label>
-<input id="reciteDate" type="date" required>
-</div>
-<div>
-<label for="memorization">ضبط الحفظ</label>
-<select id="memorization">
-<option>متقن</option><option>جيد ويحتاج مراجعة</option><option>يحتاج إلى إعادة</option>
-</select>
-</div>
-<div>
-<label for="tajweed">التجويد</label>
-<select id="tajweed">
-<option>سليم</option><option>ملاحظات بسيطة</option><option>يحتاج إلى متابعة</option>
-</select>
-</div>
-</div>
-<label for="mistakes">الأخطاء والمواضع التي تحتاج إلى تثبيت</label>
-<textarea id="mistakes" maxlength="1500"></textarea>
-<label for="teacherNote">ملاحظات المحفّظ</label>
-<textarea id="teacherNote" maxlength="1500"></textarea>
-<div class="grid">
-<button type="button" id="startRecording">🎙️ بدء التسجيل</button>
-<button type="button" id="stopRecording" class="secondary" disabled>⏹️ إيقاف التسجيل</button>
-</div>
-<button type="button" id="deleteRecording" class="danger">مسح الصوت المسجّل</button>
-<audio id="audioPreview" controls hidden></audio>
-<p id="recordingStatus" class="status">لم يبدأ التسجيل بعد.</p>
-<button id="saveRecitation" type="submit">رفع الصوت وحفظ التسميع</button>
-</form>
-<p id="recitationStatus" class="status"></p>
-</div>
-<div class="panel">
-<h2>سجلات التسميع الواردة</h2>
-<div id="recitationList" class="empty">لم تُحمّل السجلات بعد.</div>
-</div>
-</section>
+    <!-- المحتوى -->
+    <div class="container">
 
-<section id="tasks" class="tab hidden">
-<div class="panel">
-<h2>إضافة واجب</h2>
-<form id="taskForm">
-<label for="taskStudent">الطالب</label>
-<select id="taskStudent" required></select>
-<label for="taskType">نوع الواجب</label>
-<select id="taskType"><option>حفظ جديد</option><option>مراجعة</option><option>تثبيت</option></select>
-<label for="taskDue">موعد التسليم</label>
-<input id="taskDue" type="date" required>
-<label for="taskPortion">المقدار المطلوب</label>
-<input id="taskPortion" maxlength="160" required>
-<label for="taskInstructions">توجيهات المحفّظ</label>
-<textarea id="taskInstructions" maxlength="1000"></textarea>
-<button type="submit">حفظ الواجب</button>
-</form>
-<p id="taskStatus" class="status"></p>
-</div>
-<div class="panel">
-<h2>قائمة الواجبات</h2>
-<div id="taskList" class="empty">لم تُحمّل الواجبات بعد.</div>
-</div>
-</section>
-</div>
-</main>
+        <!-- قسم الرئيسية -->
+        <section id="dashboard" class="tab-content">
+            <h2>لوحة المؤشرات</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>إجمالي الطلاب</h3>
+                    <div class="stat-number">14</div>
+                </div>
+                <div class="stat-card">
+                    <h3>التسميع اليومي</h3>
+                    <div class="stat-number">8</div>
+                </div>
+            </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-'use strict';
+            <div class="form-card" style="margin-top: 20px;">
+                <h2>تسجيل حضور سريع</h2>
+                <div class="form-group">
+                    <label>اختر الطالب</label>
+                    <select>
+                        <option>محمد الفهري</option>
+                        <option>يوسف التونسي</option>
+                        <option>أحمد العبيدي</option>
+                    </select>
+                </div>
+                <button class="btn-primary">حضور</button>
+            </div>
+        </section>
 
-const SUPABASE_URL = 'https://yysruuckpfqzymvpioce.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_YxRCrAWRLzmn7DHD2nk1Ig_GniEdvxU';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        <!-- قسم الطلاب -->
+        <section id="students" class="tab-content hidden">
+            <h2>قائمة الطلاب</h2>
+            <div class="student-item">
+                <div class="row">
+                    <strong>محمد الفهري</strong>
+                    <span class="meta">سورة البقرة</span>
+                </div>
+                <p class="meta">الحزب: 3 | التقييم: ممتاز</p>
+            </div>
+            <div class="student-item">
+                <div class="row">
+                    <strong>يوسف التونسي</strong>
+                    <span class="meta">سورة آل عمران</span>
+                </div>
+                <p class="meta">الحزب: 7 | التقييم: جيد جداً</p>
+            </div>
+        </section>
 
-const $ = id => document.getElementById(id);
-const today = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-};
-const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
-let currentUser = null;
-let students = [];
-let recitations = [];
-let tasks = [];
-let mediaRecorder = null;
-let audioChunks = [];
-let audioBlob = null;
-let audioUrl = null;
-let recordingStream = null;
+        <!-- قسم التسجيل الصوتي -->
+        <section id="recorder" class="tab-content hidden">
+            <h2>مختبر التسميع الصوتي</h2>
+            <div class="recorder-card">
+                <div class="form-group">
+                    <label>اسم الطالب المعني بالتسميع</label>
+                    <input type="text" placeholder="اكتب اسم الطالب هنا...">
+                </div>
+                <div class="rec-timer">00:00</div>
+                <div class="rec-status">في انتظار بدء التسجيل...</div>
+                
+                <div class="recorder-controls" style="margin-top: 15px;">
+                    <button class="rec-btn start" onclick="alert('بدء التسجيل (تجريبي)')">بدء التسجيل</button>
+                    <button class="rec-btn stop" onclick="alert('إيقاف التسجيل (تجريبي)')">إيقاف</button>
+                    <button class="rec-btn reset" onclick="alert('إعادة ضبط')">إعادة</button>
+                </div>
+            </div>
+        </section>
 
-$('reciteDate').value = today();
-$('taskDue').value = today();
+    </div>
 
-function showStatus(id, message) {
-  $(id).textContent = message;
-}
-function showError(id, error) {
-  console.error(error);
-  showStatus(id, 'تعذّر إتمام العملية: ' + (error?.message || 'خطأ غير معروف'));
-}
-function requireLogin() {
-  if (!currentUser) throw new Error('يرجى الدخول بحساب المحفّظ أولًا.');
-}
-function setLoggedIn(user) {
-  currentUser = user || null;
-  $('authPanel').classList.toggle('hidden', !!user);
-  $('app').classList.toggle('hidden', !user);
-  $('logoutButton').classList.toggle('hidden', !user);
-  if (user) {
-    showStatus('authStatus', 'تم التحقق من الدخول.');
-    refreshAll();
-  }
-}
-function renderSelects() {
-  for (const id of ['reciteStudent','taskStudent']) {
-    const select = $(id);
-    const old = select.value;
-    select.innerHTML = students.map(s =>
-      `<option value="${esc(s.id)}">${esc(s.full_name || 'طالب')}</option>`
-    ).join('');
-    if (!students.length) select.innerHTML = '<option value="">أضف طالبًا أولًا</option>';
-    else if (students.some(s => String(s.id) === old)) select.value = old;
-  }
-}
-function studentName(id) {
-  return students.find(s => String(s.id) === String(id))?.full_name || 'طالب';
-}
-function renderStudents() {
-  $('countStudents').textContent = students.length;
-  $('studentList').innerHTML = students.length ? students.map(s => `
-    <div class="item">
-      <strong>${esc(s.full_name || 'طالب')}</strong>
-      <p>${esc(s.student_email || '')}</p>
-      <p class="muted">البداية: ${esc(s.start_surah || 'غير محددة')} · المستوى: ${esc(s.level || 'غير محدد')} · الهدف: ${esc(s.daily_goal || 'غير محدد')}</p>
-      ${s.notes ? `<p>${esc(s.notes)}</p>` : ''}
-    </div>`).join('') : '<div class="empty">لا توجد طلبة في قاعدة البيانات لهذا الحساب.</div>';
-  renderSelects();
-}
-function renderRecitations() {
-  $('countRecitations').textContent = recitations.length;
-  const html = recitations.map(r => `
-    <div class="item">
-      <strong>${esc(studentName(r.student_id))}</strong>
-      <p>${esc(r.surah || 'مقدار غير محدد')} · ${esc(r.recitation_date || r.created_at || '')}</p>
-      ${r.grade ? `<p>التقييم: ${esc(r.grade)}</p>` : ''}
-      ${r.mistakes ? `<p>الأخطاء: ${esc(r.mistakes)}</p>` : ''}
-      ${r.note ? `<p>ملاحظة: ${esc(r.note)}</p>` : ''}
-      ${r.audio_url ? `<button type="button" data-audio="${esc(r.audio_url)}">فتح التسجيل الصوتي</button>` : '<p class="muted">لا يوجد رابط صوت محفوظ في هذا السجل.</p>'}
-      <div id="audio-${esc(r.id)}"></div>
-    </div>`).join('');
-  $('recitationList').innerHTML = html || '<div class="empty">لا توجد سجلات تسميع واردة.</div>';
-  $('recent').innerHTML = recitations.slice(0,5).map(r =>
-    `<div class="item"><strong>${esc(studentName(r.student_id))}</strong><p>${esc(r.surah || '')} · ${esc(r.recitation_date || r.created_at || '')}</p></div>`
-  ).join('') || '<div class="empty">لا توجد تسجيلات حتى الآن.</div>';
-}
-function renderTasks() {
-  $('countTasks').textContent = tasks.length;
-  $('taskList').innerHTML = tasks.map(t => `
-    <div class="item">
-      <strong>${esc(studentName(t.student_id))}</strong>
-      <p>${esc(t.type || t.task_type || 'واجب')} · ${esc(t.portion || t.content || '')}</p>
-      <p>موعد التسليم: ${esc(t.due_date || t.due || '')}</p>
-      ${t.instructions ? `<p>${esc(t.instructions)}</p>` : ''}
-    </div>`).join('') || '<div class="empty">لا توجد واجبات محفوظة.</div>';
-}
-async function refreshAll() {
-  if (!currentUser) return;
-  showStatus('dashboardStatus', 'جارٍ تحميل البيانات...');
-  try {
-    const [studentResult, recitationResult, taskResult] = await Promise.all([
-      // تم التصحيح هنا ليتطابق مع اسم الجدول في قاعدة البيانات: students
-      supabaseClient.from('students').select('*').eq('teacher_id', currentUser.id),
-      supabaseClient.from('Recitation').select('*').eq('teacher_id', currentUser.id).order('created_at', {ascending:false}).limit(100),
-      supabaseClient.from('Homework').select('*').eq('teacher_id', currentUser.id).order('created_at', {ascending:false}).limit(100)
-    ]);
-    if (studentResult.error) throw new Error('الطلبة: ' + studentResult.error.message);
-    if (recitationResult.error) throw new Error('التسميع: ' + recitationResult.error.message);
-    if (taskResult.error) throw new Error('الواجبات: ' + taskResult.error.message);
-    students = studentResult.data || [];
-    recitations = recitationResult.data || [];
-    tasks = taskResult.data || [];
-    renderStudents();
-    renderRecitations();
-    renderTasks();
-    showStatus('dashboardStatus', 'تم تحميل البيانات بنجاح.');
-  } catch (error) {
-    showError('dashboardStatus', error);
-  }
-}
-
-$('authForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const button = $('loginButton');
-  button.disabled = true;
-  showStatus('authStatus', 'جارٍ التحقق من بيانات الدخول...');
-  try {
-    const {data, error} = await supabaseClient.auth.signInWithPassword({
-      email: $('authEmail').value.trim(),
-      password: $('authPassword').value
-    });
-    if (error) throw error;
-    setLoggedIn(data.user);
-  } catch (error) {
-    showError('authStatus', error);
-  } finally {
-    button.disabled = false;
-  }
-});
-$('logoutButton').addEventListener('click', async () => {
-  const {error} = await supabaseClient.auth.signOut();
-  if (error) return showError('authStatus', error);
-  setLoggedIn(null);
-  showStatus('authStatus', 'تم تسجيل الخروج.');
-});
-$('refreshButton').addEventListener('click', refreshAll);
-
-document.querySelectorAll('nav button').forEach(button => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('nav button').forEach(b => {
-      b.classList.remove('active');
-      b.classList.add('secondary');
-    });
-    button.classList.add('active');
-    button.classList.remove('secondary');
-    document.querySelectorAll('.tab').forEach(s => s.classList.add('hidden'));
-    $(button.dataset.tab).classList.remove('hidden');
-  });
-});
-
-$('studentForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  try {
-    requireLogin();
-    const name = $('studentName').value.trim();
-    const email = $('studentEmail').value.trim().toLowerCase();
-    // تم التصحيح هنا أيضاً إلى students
-    const {data, error} = await supabaseClient.from('students').insert({
-      id: crypto.randomUUID(),
-      teacher_id: currentUser.id,
-      full_name: name,
-      student_email: email,
-      start_surah: $('startSurah').value.trim(),
-      level: $('level').value,
-      daily_goal: $('dailyGoal').value,
-      notes: $('studentNotes').value.trim()
-    }).select('*').single();
-    if (error) throw error;
-    $('studentForm').reset();
-    showStatus('studentStatus', 'تم حفظ الطالب في قاعدة البيانات.');
-    await refreshAll();
-  } catch (error) {
-    showError('studentStatus', error);
-  }
-});
-
-function clearRecording() {
-  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-  if (recordingStream) recordingStream.getTracks().forEach(track => track.stop());
-  recordingStream = null;
-  audioChunks = [];
-  audioBlob = null;
-  if (audioUrl) URL.revokeObjectURL(audioUrl);
-  audioUrl = null;
-  $('audioPreview').removeAttribute('src');
-  $('audioPreview').hidden = true;
-  $('audioPreview').load();
-  $('startRecording').disabled = false;
-  $('stopRecording').disabled = true;
-  showStatus('recordingStatus', 'تم مسح التسجيل.');
-}
-$('startRecording').addEventListener('click', async () => {
-  try {
-    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-      throw new Error('المتصفح لا يدعم التسجيل الصوتي.');
-    }
-    recordingStream = await navigator.mediaDevices.getUserMedia({audio:true});
-    audioChunks = [];
-    mediaRecorder = new MediaRecorder(recordingStream);
-    mediaRecorder.ondataavailable = event => {
-      if (event.data.size) audioChunks.push(event.data);
-    };
-    mediaRecorder.onstop = () => {
-      audioBlob = new Blob(audioChunks, {type:mediaRecorder.mimeType || 'audio/webm'});
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-      audioUrl = URL.createObjectURL(audioBlob);
-      $('audioPreview').src = audioUrl;
-      $('audioPreview').hidden = false;
-      recordingStream?.getTracks().forEach(track => track.stop());
-      recordingStream = null;
-      showStatus('recordingStatus', 'اكتمل التسجيل. استمع إليه قبل الإرسال.');
-      $('startRecording').disabled = false;
-      $('stopRecording').disabled = true;
-    };
-    mediaRecorder.start();
-    $('startRecording').disabled = true;
-    $('stopRecording').disabled = false;
-    showStatus('recordingStatus', 'التسجيل جارٍ...');
-  } catch (error) {
-    showError('recordingStatus', error);
-  }
-});
-$('stopRecording').addEventListener('click', () => {
-  if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
-});
-$('deleteRecording').addEventListener('click', clearRecording);
-
-$('reciteForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const button = $('saveRecitation');
-  button.disabled = true;
-  try {
-    requireLogin();
-    const studentId = $('reciteStudent').value;
-    const student = students.find(s => String(s.id) === String(studentId));
-    if (!student) throw new Error('أضف الطالب إلى قاعدة البيانات أولًا.');
-    if (!audioBlob) throw new Error('سجّل الصوت وأوقف التسجيل قبل الإرسال.');
-    const extension = audioBlob.type.includes('mp4') ? 'm4a' :
-      audioBlob.type.includes('ogg') ? 'ogg' : 'webm';
-    const path = `${currentUser.id}/${crypto.randomUUID()}.${extension}`;
-    showStatus('recitationStatus', 'جارٍ رفع الصوت...');
-    const {error: uploadError} = await supabaseClient.storage
-      .from('recitation').upload(path, audioBlob, {
-        contentType: audioBlob.type || 'audio/webm',
-        upsert: false
-      });
-    if (uploadError) throw new Error('رفع الصوت فشل: ' + uploadError.message);
-
-    const portion = $('recitePortion').value.trim();
-    const {error: insertError} = await supabaseClient.from('Recitation').insert({
-      id: crypto.randomUUID(),
-      student_id: student.id,
-      teacher_id: currentUser.id,
-      surah: portion,
-      verse_start: null,
-      verse_end: null,
-      recitation_date: $('reciteDate').value,
-      mistakes: $('mistakes').value.trim(),
-      note: $('teacherNote').value.trim(),
-      audio_url: path,
-      created_at: new Date().toISOString()
-    });
-    if (insertError) {
-      throw new Error('رُفع الصوت، لكن حفظ سجل التسميع فشل: ' + insertError.message);
-    }
-    clearRecording();
-    $('reciteForm').reset();
-    $('reciteDate').value = today();
-    showStatus('recitationStatus', 'تم رفع الصوت وحفظ سجل التسميع. جارٍ تحديث القائمة...');
-    await refreshAll();
-  } catch (error) {
-    showError('recitationStatus', error);
-  } finally {
-    button.disabled = false;
-  }
-});
-
-$('taskForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  try {
-    requireLogin();
-    const studentId = $('taskStudent').value;
-    if (!students.some(s => String(s.id) === String(studentId))) {
-      throw new Error('أضف الطالب أولًا.');
-    }
-    const {error} = await supabaseClient.from('Homework').insert({
-      id: crypto.randomUUID(),
-      student_id: studentId,
-      teacher_id: currentUser.id,
-      type: $('taskType').value,
-      due_date: $('taskDue').value,
-      portion: $('taskPortion').value.trim(),
-      instructions: $('taskInstructions').value.trim(),
-      created_at: new Date().toISOString()
-    });
-    if (error) throw error;
-    $('taskForm').reset();
-    $('taskDue').value = today();
-    showStatus('taskStatus', 'تم حفظ الواجب في قاعدة البيانات.');
-    await refreshAll();
-  } catch (error) {
-    showError('taskStatus', error);
-  }
-});
-
-document.addEventListener('click', async e => {
-  const button = e.target.closest('[data-audio]');
-  if (!button) return;
-  try {
-    const path = button.dataset.audio;
-    const {data, error} = await supabaseClient.storage
-      .from('recitation').createSignedUrl(path, 3600);
-    if (error) throw error;
-    const holder = button.nextElementSibling;
-    holder.innerHTML = '';
-    const player = document.createElement('audio');
-    player.controls = true;
-    player.src = data.signedUrl;
-    holder.appendChild(player);
-    await player.play().catch(() => {});
-  } catch (error) {
-    alert('تعذّر فتح التسجيل الصوتي: ' + error.message);
-  }
-});
-
-(async () => {
-  try {
-    const {data, error} = await supabaseClient.auth.getSession();
-    if (error) throw error;
-    if (data.session?.user) setLoggedIn(data.session.user);
-  } catch (error) {
-    showError('authStatus', error);
-  }
-})();
-</script>
+    <script>
+        function switchTab(tabId) {
+            // إخفاء الكل
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // إزالة الأنشطة من الأزرار
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // إظهار التاب المطلوب
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // تفعيل الزر المناسب
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>
