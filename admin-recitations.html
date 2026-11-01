@@ -1,254 +1,165 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>في رحاب القرآن - تسجيلات الطلبة</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f7f3;
-      color: #173f32;
-      margin: 0;
-      padding: 20px;
-    }
-    main {
-      max-width: 850px;
-      margin: auto;
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-    }
-    h1 { font-size: 25px; }
-    input, button {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 12px;
-      margin: 7px 0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    input { border: 1px solid #bbb; }
-    button {
-      background: #246344;
-      color: white;
-      border: 0;
-      cursor: pointer;
-    }
-    .secondary { background: #777; }
-    .item {
-      border: 1px solid #ddd;
-      padding: 14px;
-      margin: 12px 0;
-      border-radius: 10px;
-      overflow-wrap: anywhere;
-    }
-    audio { width: 100%; margin-top: 10px; }
-    #message { white-space: pre-wrap; }
-    .error { color: #b00020; }
-  </style>
+    <meta charset="UTF-8">
+    <title>تسجيلات الطلبة - في رحاب القرآن</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-  <h1>في رحاب القرآن</h1>
-  <h2>إدارة تسميع الطلبة</h2>
 
-  <section id="loginSection">
-    <p>الدخول إلى حساب الإدارة</p>
-    <form id="loginForm">
-      <input id="email" type="email" placeholder="البريد الإلكتروني للإدارة" required>
-      <input id="password" type="password" placeholder="كلمة السر" required>
-      <button type="submit">دخول</button>
-    </form>
-  </section>
+    <!-- قسم تسجيل الدخول (يظهر إذا لم يكن المدير مسجلاً للدخول) -->
+    <section id="auth-section">
+        <h2>تسجيل الدخول للمحفّظ</h2>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
+            <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+            <button type="submit" id="loginBtn">دخول</button>
+            <p id="loginError" style="color: red;"></p>
+        </form>
+    </section>
 
-  <section id="adminSection" hidden>
-    <p id="accountInfo"></p>
-    <button id="refreshButton">تحديث التسجيلات</button>
-    <button id="logoutButton" class="secondary">خروج</button>
-    <p id="message">اضغط على تحديث التسجيلات.</p>
-    <div id="recordings"></div>
-  </section>
-</main>
+    <!-- المحتوى الرئيسي (يظهر بعد تسجيل الدخول) -->
+    <div id="app-content" class="hidden">
+        
+        <!-- شريط التنقل العلوي -->
+        <header>
+            <h1>في رحاب القرآن - لوحة المحفّظ</h1>
+            <div>
+                <span id="userRole"></span> | <span id="userName"></span>
+                <button id="logoutBtn" class="btn-primary btn-small btn-danger">خروج</button>
+            </div>
+        </header>
 
-<script>
-const SUPABASE_URL = 'https://yysruuckpfqzymvpioce.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_YxRCrAWRLzmn7DHD2nk1Ig_GniEdvxU';
+        <!-- أزرار التنقل بين الأقسام -->
+        <nav class="row" style="margin: 20px 0;">
+            <button id="btn-home" class="nav-btn active">الرئيسية</button>
+            <button id="btn-students" class="nav-btn admin-only">الطلبة</button>
+            <button id="btn-record" class="nav-btn">التسجيل</button>
+            <button id="btn-homework" class="nav-btn">الواجبات</button>
+            <button id="btn-backup" class="nav-btn admin-only">النسخ الاحتياطي</button>
+        </nav>
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+        <!-- قسم الرئيسية -->
+        <section id="home-section">
+            <h2 id="homeTitle">لوحة المحفّظ</h2>
+            <p id="homeText">أدر حسابات طلبتك واستمع إلى تسجيلاتهم وأسند الواجبات من مكان واحد.</p>
+            <div class="row">
+                <div class="student-item">
+                    <span id="stat1Label">الطلبة</span>: <strong id="studentsCount">0</strong>
+                </div>
+                <div class="student-item">
+                    <span>إجمالي السجلات</span>: <strong id="recordsCount">0</strong>
+                </div>
+            </div>
+        </section>
 
-const loginSection = document.getElementById('loginSection');
-const adminSection = document.getElementById('adminSection');
-const message = document.getElementById('message');
-const recordings = document.getElementById('recordings');
+        <!-- قسم الطلبة (للمدير) -->
+        <section id="students-section" class="hidden admin-only">
+            <h2>إدارة الطلبة</h2>
+            <div class="student-item">
+                <h3>إضافة طالب جديد</h3>
+                <input type="text" id="studentName" placeholder="اسم الطالب">
+                <input type="email" id="studentEmail" placeholder="البريد الإلكتروني">
+                <input type="password" id="studentPassword" placeholder="كلمة المرور (6 أحرف على الأقل)">
+                <input type="text" id="studentStart" placeholder="بداية الحفظ (مثلاً: سورة البقرة)">
+                <input type="text" id="studentLevel" placeholder="المستوى (مثلاً: مبتدئ)">
+                <button type="button" id="addStudentBtn" class="btn-primary">إنشاء حساب الطالب</button>
+            </div>
 
-function showMessage(text, error = false) {
-  message.textContent = text;
-  message.className = error ? 'error' : '';
-}
+            <div style="margin-top: 20px;">
+                <input type="text" id="searchStudentInput" placeholder="بحث عن طالب...">
+                <div id="studentsList"></div>
+            </div>
+        </section>
 
-async function loadRecitations() {
-  recordings.replaceChildren();
-  showMessage('قاعدين نحمّلوا التسجيلات...');
+        <!-- قسم ملف الطالب (يفتح عند الضغط على ملف طالب معين) -->
+        <section id="student-profile-section" class="hidden admin-only">
+            <h2>ملف الطالب: <span id="profileStudentName"></span></h2>
+            <button type="button" id="backToStudentsBtn" class="btn-primary btn-small">← عودة لقائمة الطلبة</button>
+            
+            <h3>سجلات تسميع الطالب</h3>
+            <div id="profileRecordsList"></div>
 
-  const { data: sessionData } = await supabaseClient.auth.getSession();
-  const user = sessionData.session?.user;
+            <h3>واجبات الطالب</h3>
+            <div id="profileHomeworkList"></div>
+        </section>
 
-  if (!user) {
-    showMessage('يلزمك تدخل لحساب الإدارة من جديد.', true);
-    return;
-  }
+        <!-- قسم التسجيل الصوتي والتسميع -->
+        <section id="record-section" class="hidden">
+            <h2 id="recordTitle">تسجيل التسميع المباشر</h2>
+            
+            <!-- يظهر للمدير لاختيار الطالب الذي يريد رفع تسجيل له -->
+            <div class="admin-only" style="margin-bottom: 10px;">
+                <select id="recordStudentSelect"></select>
+            </div>
 
-  // تم التصحيح هنا ليتطابق مع اسم الجدول في قاعدة البيانات: recitations
-  const { data, error } = await supabaseClient
-    .from('recitations')
-    .select('*')
-    .order('created_at', { ascending: false });
+            <input type="text" id="recordSurah" placeholder="مقدار التسميع (مثلاً: سورة البقرة من الآية 1 إلى 20)">
+            
+            <div style="margin: 15px 0;">
+                <span id="timerDisplay" style="font-size: 24px; font-weight: bold;">00:00</span>
+                <p id="recordStatus" style="color: #555;">⚪ جاهز للتسجيل</p>
+                
+                <button type="button" id="startRecordingBtn" class="btn-primary">🔴 بدء التسجيل</button>
+                <button type="button" id="stopRecordingBtn" class="btn-primary btn-danger" disabled>⏹ إيقاف</button>
+                <button type="button" id="resetRecordingBtn" class="btn-primary btn-blue">🔄 إعادة ضبط</button>
+            </div>
 
-  if (error) {
-    showMessage(
-      'تعذّر جلب التسجيلات:\n' + error.message,
-      true
-    );
-    return;
-  }
+            <audio id="audioPlayback" controls style="margin: 10px 0; display: block;"></audio>
 
-  if (!data || data.length === 0) {
-    showMessage('ما ظهرت حتى تسجيلات حالياً.');
-    return;
-  }
+            <label id="recordNotesLabel">ملاحظات المعلم</label>
+            <textarea id="recordNotes" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+            
+            <!-- يظهر للمدير لاختيار التقييم مباشرة -->
+            <div class="admin-only" style="margin: 10px 0;">
+                <select id="recordEvaluation">
+                    <option value="ممتاز 🌟">ممتاز 🌟</option>
+                    <option value="جيد جداً 👍">جيد جداً 👍</option>
+                    <option value="جيد متوسط 📖">جيد متوسط 📖</option>
+                    <option value="يحتاج مراجعة ⚠️">يحتاج مراجعة ⚠️</option>
+                    <option value="بانتظار التقييم">بانتظار التقييم</option>
+                </select>
+            </div>
 
-  const studentIds = [...new Set(
-    data.map(r => r.student_id).filter(Boolean)
-  )];
+            <button type="button" id="saveRecordBtn" class="btn-primary btn-ok">💾 حفظ وإرسال</button>
 
-  let students = [];
-  if (studentIds.length > 0) {
-    const result = await supabaseClient
-      .from('students')
-      .select('id, full_name, student_code')
-      .in('id', studentIds);
+            <h3 id="recordsListTitle" style="margin-top: 30px;">تسجيلات الطلبة</h3>
+            <div id="recordsList"></div>
+        </section>
 
-    if (!result.error && result.data) {
-      students = result.data;
-    }
-  }
+        <!-- قسم الواجبات -->
+        <section id="homework-section" class="hidden">
+            <h2>الواجبات</h2>
+            
+            <!-- إسناد واجب (خاص بالمعلم) -->
+            <div class="admin-only student-item" style="margin-bottom: 20px;">
+                <h3>إسناد واجب جديد</h3>
+                <select id="hwStudentSelect"></select>
+                <select id="hwType">
+                    <option value="حفظ جديد">حفظ جديد</option>
+                    <option value="مراجعة صغرى">مراجعة صغرى</option>
+                    <option value="مراجعة كبرى">مراجعة كبرى</option>
+                </select>
+                <input type="text" id="hwTarget" placeholder="مقدار الواجب (مثلاً: سورة آل عمران من 1 إلى 50)">
+                <button type="button" id="addHomeworkBtn" class="btn-primary">إسناد الواجب</button>
+            </div>
 
-  const studentNames = new Map(
-    students.map(s => [String(s.id), s.full_name || 'طالب'])
-  );
+            <div id="homeworkList"></div>
+        </section>
 
-  for (const r of data) {
-    const card = document.createElement('article');
-    card.className = 'item';
+        <!-- قسم النسخ الاحتياطي (للمدير) -->
+        <section id="backup-section" class="hidden admin-only">
+            <h2>النسخ الاحتياطي وإدارة البيانات</h2>
+            <div class="row" style="margin: 20px 0;">
+                <button type="button" id="exportBtn" class="btn-primary">📥 تصدير البيانات (JSON)</button>
+                <button type="button" id="importBtn" class="btn-primary btn-blue">📤 استعادة البيانات</button>
+                <input type="file" id="importFile" accept=".json" class="hidden">
+                <button type="button" id="clearBtn" class="btn-primary btn-danger">🗑 حذف جميع السجلات والواجبات</button>
+            </div>
+        </section>
 
-    const heading = document.createElement('h3');
-    heading.textContent =
-      'الطالب: ' +
-      (studentNames.get(String(r.student_id)) ||
-       r.student_name || 'الاسم غير متوفر');
-    card.appendChild(heading);
+    </div>
 
-    const details = [
-      ['السورة', r.surah],
-      ['من الآية', r.verse_start],
-      ['إلى الآية', r.verse_end],
-      ['التاريخ', r.recitation_date || r.created_at],
-      ['التقييم', r.grade],
-      ['الأخطاء', r.mistakes],
-      ['ملاحظات الأستاذ', r.teacher_notes || r.note]
-    ];
-
-    for (const [label, value] of details) {
-      if (value !== null && value !== undefined && value !== '') {
-        const p = document.createElement('p');
-        p.textContent = label + ': ' + value;
-        card.appendChild(p);
-      }
-    }
-
-    if (r.audio_url) {
-      const audio = document.createElement('audio');
-      audio.controls = true;
-      audio.preload = 'none';
-
-      if (/^https?:\/\//i.test(r.audio_url)) {
-        audio.src = r.audio_url;
-      } else {
-        const { data: audioData, error: audioError } =
-          await supabaseClient.storage
-            .from('recitation')
-            .createSignedUrl(r.audio_url, 3600);
-
-        if (!audioError && audioData?.signedUrl) {
-          audio.src = audioData.signedUrl;
-        } else {
-          const p = document.createElement('p');
-          p.textContent = 'تعذّر فتح الصوت. تثبّت من صلاحيات ملف الصوت في Storage.';
-          card.appendChild(p);
-        }
-      }
-
-      card.appendChild(audio);
-    } else {
-      const p = document.createElement('p');
-      p.textContent = 'ما فماش رابط صوت مسجّل في هذا السجل.';
-      card.appendChild(p);
-    }
-
-    recordings.appendChild(card);
-  }
-
-  showMessage('عدد سجلات التسميع: ' + data.length);
-}
-
-document.getElementById('loginForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  showMessage('قاعدين ندخلوا للحساب...');
-
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email: document.getElementById('email').value.trim(),
-    password: document.getElementById('password').value
-  });
-
-  if (error) {
-    showMessage('تعذّر الدخول: ' + error.message, true);
-    return;
-  }
-
-  await updateScreen();
-});
-
-async function updateScreen() {
-  const { data } = await supabaseClient.auth.getSession();
-  const user = data.session?.user;
-
-  loginSection.hidden = !!user;
-  adminSection.hidden = !user;
-
-  if (user) {
-    document.getElementById('accountInfo').textContent =
-      'الحساب: ' + user.email;
-    await loadRecitations();
-  }
-}
-
-document.getElementById('refreshButton')
-  .addEventListener('click', loadRecitations);
-
-document.getElementById('logoutButton')
-  .addEventListener('click', async () => {
-    await supabaseClient.auth.signOut();
-    recordings.replaceChildren();
-    showMessage('');
-    await updateScreen();
-  });
-
-updateScreen();
-</script>
+    <!-- ربط ملف الجافاسكريبت الخاص بك -->
+    <script src="app.js"></script>
 </body>
 </html>
